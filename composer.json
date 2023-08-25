@@ -13,11 +13,12 @@
         }
     ],
     "require": {
-        "symfony/yaml": "^5.4",
+        "symfony/yaml": "^3.4 | ^4.4 | ^5.4",
         "sebastian/cli-parser": "^1.0",
         "symfony/console": "^5.4",
         "webmozart/glob": "^4.6",
-        "symfony/filesystem": "^5.4"
+        "symfony/filesystem": "^5.4",
+        "league/mime-type-detection": "^1.13"
     },
     "license": "BSD-3-Clause",
     "bin": [
