@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "octal": {
+      "type": "string",
+      "pattern": "^0\\d{3}$"
+    },
+    "paths_set": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(?!/).+"
+      }
+    },
+    "permission_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/$defs/octal"
+        },
+        "writeable": {
+          "$ref": "#/$defs/octal"
+        },
+        "executable": {
+          "$ref": "#/$defs/octal"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "default": {
+      "$ref": "#/$defs/paths_set"
+    },
+    "writeable": {
+      "$ref": "#/$defs/paths_set"
+    },
+    "executable": {
+      "$ref": "#/$defs/paths_set"
+    },
+    "file_permissions": {
+      "$ref": "#/$defs/permission_set"
+    },
+    "directory_permissions": {
+      "$ref": "#/$defs/permission_set"
+    }
+  }
+}
