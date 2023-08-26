@@ -62,6 +62,15 @@ class LoadConfig {
         $config[$type] = [];
       }
       $config[$type] += $perms->jsonSerialize();
+
+      // Ensure we have octal strings as values.
+      $config[$type] = array_map(function ($value) {
+        if (is_int($value)) {
+          return '0' . decoct($value);
+        }
+
+        return $value;
+      }, $config[$type]);
     }
 
     return $config;

@@ -43,18 +43,20 @@ $START_DIR = getcwd() . '/';
         $items = Glob::glob($path);
         foreach ($items as $item) {
           $perms = (string) $config['file_permissions'][$type];
+          $label = Path::makeRelative($item, $START_DIR);
           if (is_dir($item)) {
             $perms = (string) $config['directory_permissions'][$type];
+            $label = rtrim($label, '/') . '/';
           }
-          $current_perms = substr(sprintf('%o', fileperms($item)), -4);
-          if (strcasecmp($current_perms, $perms) !== 0) {
-            try {
-              $filesystem->chmod($item, $perms);
-              $output->writeln($perms . ' ' . $meta['icon'] . Path::makeRelative($item, $START_DIR));
-            }
-            catch (IOException $exception) {
-              $failures[] = sprintf('Failed to change %s to %s 😞 %s', $current_perms, $perms, Path::makeRelative($item, $START_DIR)) . PHP_EOL;
-            }
+          try {
+            $filesystem->chmod($item, octdec($perms), 0000, TRUE);
+            $output->writeln($perms . ' ' . $meta['icon'] . $label);
+          }
+          catch (IOException $exception) {
+            $output->writeln('<error>' . $perms . ' ' . $meta['icon'] . $label . '</error>');
+            $output->writeln('<error>' . $exception->getMessage() . '</error>');
+            $failures[] = $exception->getMessage() . PHP_EOL;
+//            $failures[] = sprintf('Failed to set %s 😞 %s', $perms, Path::makeRelative($item, $START_DIR)) . PHP_EOL;
           }
         }
       }
