@@ -64,4 +64,4 @@ directory_permissions:
 
 ## Troubleshooting
 
-This tool may reveal invalid symlinks, which you will see in the error output at the end, and should remove to avoid further errors.
+This tool may reveal invalid symlinks, which you will see in the error output at the end, and should be deleted to avoid further errors.
