@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
 
+use AKlump\EasyPerms\ConfigInterface;
+use AKlump\EasyPerms\Helpers\GetConcretePaths;
+use AKlump\EasyPerms\Helpers\GetLabel;
+use AKlump\EasyPerms\Helpers\IsDir;
+use AKlump\EasyPerms\Helpers\SortPermissionTypes;
 use AKlump\EasyPerms\LoadConfig;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,7 +15,6 @@ use Symfony\Component\Console\SingleCommandApplication;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
-use Webmozart\Glob\Glob;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -23,42 +27,60 @@ $START_DIR = getcwd() . '/';
   ->addArgument('config', InputArgument::REQUIRED)
   ->setCode(function (InputInterface $input, OutputInterface $output) use ($START_DIR): int {
 
+    $start_time = microtime(TRUE);
     $filesystem = new Filesystem();
     $config_path = $input->getArgument('config');
     $config_path = Path::makeAbsolute($config_path, $START_DIR);
     $config = (new LoadConfig())($config_path);
 
     $types = [
-      'default' => ['icon' => '☀️  '],
-      'writeable' => ['icon' => '✏️  '],
-      'executable' => ['icon' => '🛠  '],
+      ConfigInterface::READONLY => ['icon' => '📘️ '],
+      ConfigInterface::DEFAULT => ['icon' => '☀️  '],
+      ConfigInterface::WRITEABLE => ['icon' => '✏️  '],
+      ConfigInterface::EXECUTABLE => ['icon' => '🛠  '],
     ];
+    $apply_order = (new SortPermissionTypes())(array_keys($types));
+
     $failures = [];
-    foreach ($types as $type => $meta) {
+    $perms_to_set = [];
+    $is_dir = new IsDir();
+
+    foreach ($apply_order as $type) {
+      $meta = $types[$type];
       if (empty($config[$type])) {
         continue;
       }
-
       foreach ($config[$type] as $path) {
-        $items = Glob::glob($path);
+        if (!Path::isAbsolute($path)) {
+          $path = Path::makeAbsolute($path, dirname($config_path));
+        }
+        $items = (new GetConcretePaths(dirname($config_path)))($path);
         foreach ($items as $item) {
-          $perms = (string) $config['file_permissions'][$type];
-          $label = Path::makeRelative($item, $START_DIR);
-          if (is_dir($item)) {
-            $perms = (string) $config['directory_permissions'][$type];
-            $label = rtrim($label, '/') . '/';
+          $perms_to_set[$item][] = $meta;
+          if ($is_dir($item)) {
+            $perms_to_set[$item][] = (string) $config['directory_permissions'][$type];
           }
-          try {
-            $filesystem->chmod($item, octdec($perms), 0000, TRUE);
-            $output->writeln($perms . ' ' . $meta['icon'] . $label);
-          }
-          catch (IOException $exception) {
-            $output->writeln('<error>' . $perms . ' ' . $meta['icon'] . $label . '</error>');
-            $output->writeln('<error>' . $exception->getMessage() . '</error>');
-            $failures[] = $exception->getMessage() . PHP_EOL;
-//            $failures[] = sprintf('Failed to set %s 😞 %s', $perms, Path::makeRelative($item, $START_DIR)) . PHP_EOL;
+          else {
+            $perms_to_set[$item][] = (string) $config['file_permissions'][$type];
           }
         }
+      }
+    }
+
+    ksort($perms_to_set);
+
+    // Second, set the perms for all paths.
+    $get_label = new GetLabel();
+    foreach ($perms_to_set as $item => $data) {
+      list($meta, $perms) = $data;
+      try {
+        $filesystem->chmod($item, octdec($perms));
+        $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item));
+      }
+      catch (IOException $exception) {
+        $output->writeln('<error>' . $perms . ' ' . $meta['icon'] . $get_label($item) . '</error>');
+        $output->writeln('<error>' . $exception->getMessage() . '</error>');
+        $failures[] = $exception->getMessage() . PHP_EOL;
       }
     }
 
@@ -69,6 +91,10 @@ $START_DIR = getcwd() . '/';
 
       return Command::FAILURE;
     }
+
+    $duration = microtime(TRUE) - $start_time;
+
+    $output->writeln(sprintf('<info>Completed in %.2f seconds.</info>', $duration));
     $output->writeln('<info>Permission setting was successful.</info>');
 
     return Command::SUCCESS;

@@ -31,6 +31,9 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "readonly": {
+      "$ref": "#/$defs/paths_set"
+    },
     "default": {
       "$ref": "#/$defs/paths_set"
     },

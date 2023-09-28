@@ -1,0 +1,6 @@
+default:
+  - ../../*
+writeable:
+  - ../../web/sites/*/files
+executable:
+  - ../../vendor/bin/*
