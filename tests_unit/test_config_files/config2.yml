@@ -1,0 +1,4 @@
+default:
+  - banana
+executable:
+  - eggplant

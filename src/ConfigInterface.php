@@ -12,4 +12,8 @@ interface ConfigInterface {
 
   const EXECUTABLE = 'executable';
 
+  const DIRECTORY_PERMISSIONS = 'directory_permissions';
+
+  const FILE_PERMISSIONS = 'file_permissions';
+
 }

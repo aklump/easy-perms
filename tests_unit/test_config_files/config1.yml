@@ -1,0 +1,8 @@
+readonly:
+  - apple
+default:
+  - banana
+writeable:
+  - carrot
+executable:
+  - daikon

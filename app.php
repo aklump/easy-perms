@@ -24,15 +24,14 @@ $START_DIR = getcwd() . '/';
 (new SingleCommandApplication())
   ->setName('perms')
   ->setVersion('0.0.0')
-  ->addArgument('config', InputArgument::REQUIRED)
+  ->addArgument('config', InputArgument::IS_ARRAY)
   ->setCode(function (InputInterface $input, OutputInterface $output) use ($START_DIR): int {
 
     $start_time = microtime(TRUE);
     $filesystem = new Filesystem();
-    $config_path = $input->getArgument('config');
-    $config_path = Path::makeAbsolute($config_path, $START_DIR);
-    $config = (new LoadConfig())($config_path);
-
+    $config_paths = $input->getArgument('config');
+    $config_paths = array_map(fn($path) => Path::makeAbsolute($path, $START_DIR), $config_paths);
+    $config = (new LoadConfig())($config_paths);
     $types = [
       ConfigInterface::READONLY => ['icon' => '📘️ '],
       ConfigInterface::DEFAULT => ['icon' => '☀️  '],
@@ -44,6 +43,7 @@ $START_DIR = getcwd() . '/';
     $failures = [];
     $perms_to_set = [];
     $is_dir = new IsDir();
+    $get_label = new GetLabel();
 
     foreach ($apply_order as $type) {
       $meta = $types[$type];
@@ -51,17 +51,15 @@ $START_DIR = getcwd() . '/';
         continue;
       }
       foreach ($config[$type] as $path) {
-        if (!Path::isAbsolute($path)) {
-          $path = Path::makeAbsolute($path, dirname($config_path));
-        }
-        $items = (new GetConcretePaths(dirname($config_path)))($path);
+        $output->writeln(sprintf('<info>Checking %s</info>', $get_label($path)));
+        $items = (new GetConcretePaths())($path);
         foreach ($items as $item) {
-          $perms_to_set[$item][] = $meta;
+          $perms_to_set[$item] = [$meta];
           if ($is_dir($item)) {
-            $perms_to_set[$item][] = (string) $config['directory_permissions'][$type];
+            $perms_to_set[$item][] = (string) $config[ConfigInterface::DIRECTORY_PERMISSIONS][$type];
           }
           else {
-            $perms_to_set[$item][] = (string) $config['file_permissions'][$type];
+            $perms_to_set[$item][] = (string) $config[ConfigInterface::FILE_PERMISSIONS][$type];
           }
         }
       }
@@ -70,10 +68,15 @@ $START_DIR = getcwd() . '/';
     ksort($perms_to_set);
 
     // Second, set the perms for all paths.
-    $get_label = new GetLabel();
     foreach ($perms_to_set as $item => $data) {
       list($meta, $perms) = $data;
       try {
+        $current = fileperms($item);
+        $current = substr(decoct($current), -4);
+        if ($current === $perms) {
+          $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item), OutputInterface::VERBOSITY_VERBOSE);
+          continue;
+        }
         $filesystem->chmod($item, octdec($perms));
         $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item));
       }

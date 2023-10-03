@@ -1,0 +1,5 @@
+file_permissions:
+  readonly: 0400
+  executable: 0700
+  writeable: 0600
+  default: 0500

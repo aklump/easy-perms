@@ -16,9 +16,69 @@ class GetConcretePathsTest extends TestCase {
   public function dataFortestInvokeProvider() {
     $tests = [];
     $tests[] = [
-      '',
-      [],
+      'app/**',
+      [
+        'app/web/',
+        'app/web/sites/',
+        'app/web/sites/all/',
+        'app/web/sites/all/files/',
+        'app/web/sites/default/',
+        'app/web/sites/default/files/',
+        'app/web/sites/default/settings.live.php',
+        'app/web/sites/default/settings.local.php',
+        'app/web/sites/default/settings.php',
+        'app/web/sites/sites.php',
+      ],
     ];
+    $tests[] = [
+
+      // I've decided to base this on bash `ls settings*.php`
+      '**/settings*.php',
+      [
+        'app/web/sites/default/settings.live.php',
+        'app/web/sites/default/settings.local.php',
+        'app/web/sites/default/settings.php',
+      ],
+    ];
+    $tests[] = [
+      '*',
+      [
+        'app/',
+        'lorem_dir/',
+        'lorem_file',
+      ],
+    ];
+    $tests[] = [
+      'app/**/',
+      [
+        'app/web/',
+        'app/web/sites/',
+        'app/web/sites/all/',
+        'app/web/sites/all/files/',
+        'app/web/sites/default/',
+        'app/web/sites/default/files/',
+      ],
+    ];
+    $tests[] = [
+      '*_dir',
+      [
+        'lorem_dir/',
+      ],
+    ];
+    $tests[] = [
+      'lorem*',
+      [
+        'lorem_dir/',
+        'lorem_file',
+      ],
+    ];
+    $tests[] = [
+      '',
+      [
+        '',
+      ],
+    ];
+
     $tests[] = [
       '**/sites/*/files/',
       [
@@ -33,28 +93,6 @@ class GetConcretePathsTest extends TestCase {
       ],
     ];
     $tests[] = [
-      'lorem*',
-      [
-        'lorem_dir/',
-        'lorem_file',
-      ],
-    ];
-    $tests[] = [
-      '*_dir',
-      [
-        'lorem_dir/',
-      ],
-    ];
-    $tests[] = [
-      '**/settings*.php',
-      [
-        'app/web/sites/default/settings.live.php',
-        'app/web/sites/default/settings.local.php',
-        'app/web/sites/default/settings.php',
-      ],
-    ];
-
-    $tests[] = [
       'app/',
       [
         'app/',
@@ -64,14 +102,6 @@ class GetConcretePathsTest extends TestCase {
       'app',
       [
         'app/',
-      ],
-    ];
-    $tests[] = [
-      '*',
-      [
-        'app/',
-        'lorem_dir/',
-        'lorem_file',
       ],
     ];
     $tests[] = [
@@ -92,36 +122,11 @@ class GetConcretePathsTest extends TestCase {
         'lorem_file',
       ],
     ];
-    $tests[] = [
-      'app/**/',
-      [
-        'app/web/',
-        'app/web/sites/',
-        'app/web/sites/all/',
-        'app/web/sites/all/files/',
-        'app/web/sites/default/',
-        'app/web/sites/default/files/',
-      ],
-    ];
+
     $tests[] = [
       'app/*/',
       [
         'app/web/',
-      ],
-    ];
-    $tests[] = [
-      'app/**',
-      [
-        'app/web/',
-        'app/web/sites/',
-        'app/web/sites/all/',
-        'app/web/sites/all/files/',
-        'app/web/sites/default/',
-        'app/web/sites/default/files/',
-        'app/web/sites/default/settings.live.php',
-        'app/web/sites/default/settings.local.php',
-        'app/web/sites/default/settings.php',
-        'app/web/sites/sites.php',
       ],
     ];
     $tests[] = [
@@ -155,7 +160,7 @@ class GetConcretePathsTest extends TestCase {
   public function testInvoke(string $path, $expected) {
     $base = $this->getBasePath();
     $expected = array_map(fn($path) => "$base/$path", $expected);
-    $this->assertSame($expected, (new GetConcretePaths($base))("$base/$path"));
+    $this->assertSame($expected, (new GetConcretePaths())("$base/$path"));
   }
 
 }
