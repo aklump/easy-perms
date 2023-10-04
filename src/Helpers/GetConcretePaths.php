@@ -3,6 +3,7 @@
 namespace AKlump\EasyPerms\Helpers;
 
 use AKlump\EasyPerms\Traits\PathHandlerTrait;
+use AKlump\GitIgnore\Analyzer;
 use AKlump\GitIgnore\Pattern;
 
 /**
@@ -26,21 +27,28 @@ class GetConcretePaths {
    */
   public function __invoke(string $path): array {
     $return_only_directories = self::isDir($path);
-    do {
-      if (empty($start_dir)) {
-        $start_dir = $path;
-      }
-      else {
-        $start_dir = substr($start_dir, 0, -1);
-      }
-    } while ($start_dir && !is_dir("$start_dir"));
+    if (file_exists($path) && !Analyzer::containsPattern($path)) {
+      $files = [
+        (new NormalizePath(dirname($path)))(basename($path)),
+      ];
+    }
+    else {
+      do {
+        if (empty($start_dir)) {
+          $start_dir = $path;
+        }
+        else {
+          $start_dir = substr($start_dir, 0, -1);
+        }
+      } while ($start_dir && !is_dir("$start_dir"));
 
-    $files = (new GetFileList())($start_dir);
-    $matcher = new Pattern($path);
-    $files = array_filter($files, function ($file) use ($matcher) {
-      return $file && $matcher->matches($file);
-    });
-    $files = array_values($files);
+      $files = (new GetFileList())($start_dir);
+      $matcher = new Pattern($path);
+      $files = array_filter($files, function ($file) use ($matcher) {
+        return $file && $matcher->matches($file);
+      });
+      $files = array_values($files);
+    }
 
     if ($return_only_directories) {
       $files = array_filter($files, fn($file) => self::isDir($file));
