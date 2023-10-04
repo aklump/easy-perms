@@ -45,36 +45,31 @@
       <p>Decide if you will install this mingled with top-level dependencies or standalone. You may want to choose standalone if you discover dependency conflicts when installing top-level. Or you may want to choose standalone if you do not want to alter the root-level <code>minimum-stability</code> value.</p>
 <h2>Install project with Composer at top level.</h2>
 <ol>
-<li>Merge in the contents of <em>composer.json</em> as shown below, with your app's top-level <em>composer.json</em>. This step will add the private repository locations and the stability flags to allow these development packages.</li>
-<li>Then run <code>composer require --dev aklump/easy-perms:@dev</code></li>
+<li><p>Merge in the contents of <em>composer.json</em> as shown below, with your app's top-level <em>composer.json</em>. This step will add the private repository locations and the stability flags to allow these development packages.</p>
+<pre><code class="json"> {
+   "repositories": [
+     {
+       "type": "github",
+       "url": "https://github.com/aklump/easy-perms"
+     },
+     {
+       "type": "github",
+       "url": "https://github.com/aklump/gitignore"
+     }
+   ],
+   "minimum-stability": "dev",
+   "prefer-stable" : true
+ }
+</code></pre>
+</li>
+<li><p>Then run <code>composer require --dev aklump/easy-perms:@dev</code></p>
+</li>
 </ol>
 <h2>Install Stand-Alone</h2>
 <pre><code class="shell">j a
-mkdir -p opt/aklump/easy-perms
-cd opt/aklump/easy-perms
-touch composer.json
-echo "/vendor/" &gt;&gt; .gitignore
-echo "composer.lock" &gt;&gt; .gitignore
-</code></pre>
-<ol>
-<li>Copy <em>composer.json</em> as shown below into the file just created.</li>
-<li>Then run <code>composer require --dev aklump/easy-perms:@dev </code></li>
-</ol>
-<h2><em>composer.json</em></h2>
-<pre><code class="json">{
-  "repositories": [
-    {
-      "type": "github",
-      "url": "https://github.com/aklump/easy-perms"
-    },
-    {
-      "type": "github",
-      "url": "https://github.com/aklump/gitignore"
-    }
-  ],
-  "minimum-stability": "dev",
-  "prefer-stable" : true
-}
+mkdir -p opt/aklump
+cd opt/aklump
+composer create-project aklump/easy-perms --repository='{"type":"github","url":"https://github.com/aklump/easy-perms"}' --repository='{"type":"github","url":"https://github.com/aklump/gitignore"}' --stability=dev
 </code></pre>
     </article>
   </div>
