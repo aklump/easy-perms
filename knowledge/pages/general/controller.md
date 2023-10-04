@@ -31,3 +31,11 @@ tags: ''
 5. Open and edit _bin/config/perms.yml_ as necessary.
 
 ## Local Configuration
+
+1. You can pass multiple configuration to the controller, e.g.
+
+```bash
+$__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
+```
+2. Do not commit _perms.local.yml_
+3. Use it for local-only, additional permissions.

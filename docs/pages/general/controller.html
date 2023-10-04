@@ -65,6 +65,15 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
 <li>Open and edit <em>bin/config/perms.yml</em> as necessary.</li>
 </ol>
 <h2>Local Configuration</h2>
+<ol>
+<li>You can pass multiple configuration to the controller, e.g.</li>
+</ol>
+<pre><code class="bash">$__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
+</code></pre>
+<ol>
+<li>Do not commit <em>perms.local.yml</em></li>
+<li>Use it for local-only, additional permissions.</li>
+</ol>
     </article>
   </div>
 </main>
