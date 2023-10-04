@@ -1,9 +1,9 @@
 page_order:
   - readme
   - syntax
-  - workflow
   - install
   - configuration
+  - workflow
   - permission_values
   - symlinks
   - troubleshooting
