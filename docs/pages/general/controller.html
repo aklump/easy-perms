@@ -7,7 +7,7 @@
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css">
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css">
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css">
-    <title>Configuration | Easy Perms</title>
+    <title>Controller and Configuration | Easy Perms</title>
 </head>
 <body class="my-5">
 
@@ -32,7 +32,7 @@
 
       </div>
       <div class="header__tags me-3">  </div>
-      <div class="header__page-numbers flex-shrink-1">4
+      <div class="header__page-numbers flex-shrink-1">12
         / 12</div>
     </div>
   </div>
@@ -41,14 +41,24 @@
 <main class="container-md flex-column">
   <div class="row mb-5 pt-5">
     <article class="col">
-      <h1 class="mb-4 text-primary">Configuration</h1>
-      <ul>
-<li>Both YAML and JSON is supported.</li>
-<li>See <em>json_schema/config.schema.json</em> for details of the configuration.</li>
-<li>Notice globs are supported. So are <code>/**/</code> doubles.</li>
-</ul>
+      <h1 class="mb-4 text-primary">Controller and Configuration</h1>
+      <p>#1. As a matter of convention, I like to create an executable file as  <em>./bin/perms</em> in any application I work on, as the single point of execution for correcting permission issues. With that in mind...
+2. First, create the controller and config files:</p>
+<pre><code class="shell">   j a
+   mkdir -p bin/config
+   touch bin/perms
+   touch bin/config/perms.yml
+   touch bin/config/perms.local.yml
+   chmod u+x bin/perms
+</code></pre>
 <ol>
-<li>Copy the contents of <em>vendor/aklump/easy-perms/init/perms.yml</em> into <em>bin/config/perms.yml</em> to get started with configuration.</li>
+<li><p>Now paste these contents into <em>bin/perms</em>:</p>
+<pre><code class="shell">#!/usr/bin/env bash
+s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp; s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
+   
+$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
+</code></pre>
+</li>
 </ol>
     </article>
   </div>
@@ -68,7 +78,7 @@
       bi-caret-left-fill"></i> Easy Perms</a>
   
     
-              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html" class="btn nav__prev-page js-nav__prev-page
+              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/usage.html" class="btn nav__prev-page js-nav__prev-page
     btn-primary"><i class="bi
       bi-caret-left-fill"></i></a>
   
@@ -79,9 +89,8 @@
        aria-controls="table-of-contents"><i class="bi
            bi-list-ol"></i></a>
     
-              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/workflow.html" class="btn nav__next-page js-nav__next-page
-    btn-primary"><i class="bi bi-file-earmark"></i> Workflow Strategy <i class="bi
-       bi-caret-right-fill"></i></a>
+              <span class="btn nav__next-page js-nav__next-page
+    btn-primary"></span>
   
     
               <span class="btn nav__next-chapter btn-secondary "></span>
