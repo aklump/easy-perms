@@ -1,6 +1,6 @@
 <?php
 
-namespace AKlump\EasyPerms;
+namespace AKlump\EasyPerms\Config;
 
 interface ConfigInterface {
 

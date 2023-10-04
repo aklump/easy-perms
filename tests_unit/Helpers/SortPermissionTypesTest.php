@@ -2,7 +2,7 @@
 
 namespace AKlump\EasyPerms\Tests\Helpers;
 
-use AKlump\EasyPerms\ConfigInterface;
+use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Helpers\SortPermissionTypes;
 use PHPUnit\Framework\TestCase;
 

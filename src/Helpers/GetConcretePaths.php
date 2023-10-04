@@ -3,7 +3,7 @@
 namespace AKlump\EasyPerms\Helpers;
 
 use AKlump\EasyPerms\Traits\PathHandlerTrait;
-use AKlump\GitIgnorePatternMatcher\StringMatcher;
+use AKlump\GitIgnore\Pattern;
 
 /**
  * @url https://git-scm.com/docs/gitignore#_pattern_format
@@ -36,7 +36,7 @@ class GetConcretePaths {
     } while ($start_dir && !is_dir("$start_dir"));
 
     $files = (new GetFileList())($start_dir);
-    $matcher = new StringMatcher($path);
+    $matcher = new Pattern($path);
     $files = array_filter($files, function ($file) use ($matcher) {
       return $file && $matcher->matches($file);
     });

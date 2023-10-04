@@ -1,3 +1,12 @@
 page_order:
   - readme
+  - syntax
+  - workflow
+  - install
+  - configuration
+  - permission_values
+  - symlinks
+  - troubleshooting
+  - web_package
+  - resources
   - changelog

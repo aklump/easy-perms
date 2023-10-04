@@ -3,7 +3,7 @@
 namespace AKlump\EasyPerms\Traits;
 
 
-use AKlump\GitIgnorePatternMatcher\StringAnalyzer;
+use AKlump\GitIgnore\Analyzer;
 use Symfony\Component\Filesystem\Path;
 
 trait HasBasePathTrait {
@@ -22,7 +22,7 @@ trait HasBasePathTrait {
     if (empty($base_path)) {
       throw new \InvalidArgumentException(sprintf('$base_path cannot be empty.'));
     }
-    if ($base_path && StringAnalyzer::containsUnmatchedPatterns($base_path)) {
+    if ($base_path && Analyzer::containsPattern($base_path)) {
       throw new \InvalidArgumentException(sprintf('$base_path cannot contain unmatched patterns: %s', $base_path));
     }
     $this->basePath = Path::normalize($base_path);

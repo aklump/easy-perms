@@ -5,8 +5,13 @@ namespace AKlump\EasyPerms;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
+use AKlump\EasyPerms\Config\ConfigInterface;
 
 class LoadConfig {
+
+  public function __construct(array $defaults) {
+    $this->defaults = $defaults;
+  }
 
   /**
    * @param array $config_paths
@@ -103,10 +108,7 @@ class LoadConfig {
   }
 
   private function ensureDefaults(array $config): array {
-    foreach ([
-               ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
-               ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
-             ] as $type => $perms) {
+    foreach ($this->defaults as $type => $perms) {
       if (empty($config[$type]) || !is_array($config[$type])) {
         $config[$type] = [];
       }

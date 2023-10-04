@@ -1,27 +1,40 @@
 {
-    "name": "aklump/easy-perms",
-    "type": "project",
-    "autoload": {
-        "psr-4": {
-            "AKlump\\EasyPerms\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Aaron Klump",
-            "email": "sourcecode@intheloftstudios.com"
-        }
-    ],
-    "require": {
-        "symfony/yaml": "^3.4 | ^4.4 | ^5.4",
-        "sebastian/cli-parser": "^1.0",
-        "symfony/console": "^5.4",
-        "webmozart/glob": "^4.6",
-        "symfony/filesystem": "^5.4",
-        "league/mime-type-detection": "^1.13"
-    },
-    "license": "BSD-3-Clause",
-    "bin": [
-        "./bin/easy-perms"
-    ]
+  "name": "aklump/easy-perms",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "AKlump\\EasyPerms\\": "src/",
+      "AKlump\\EasyPerms\\Tests\\": "tests_unit/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "github",
+      "url": "https://github.com/aklump/gitignore"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Aaron Klump",
+      "email": "sourcecode@intheloftstudios.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "symfony/yaml": "^3.4 | ^4.4 | ^5.4",
+    "sebastian/cli-parser": "^1.0",
+    "symfony/console": "^5.4",
+    "symfony/filesystem": "^5.4",
+    "league/mime-type-detection": "^1.13",
+    "crysalead/dir": "^2.0",
+    "ext-json": "*",
+    "aklump/gitignore": "@dev"
+  },
+  "license": "BSD-3-Clause",
+  "bin": [
+    "./bin/easy-perms"
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
 }

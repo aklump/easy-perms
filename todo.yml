@@ -1,2 +1,3 @@
-- create tree and set perms on tree before doing any file handling
-- add multiple config file support and merging
+- if config file doesn't exist ask to create it
+- on create; copy from int
+- on copy from int; paste the default perms into config so it's transparent to user.

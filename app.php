@@ -1,7 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-use AKlump\EasyPerms\ConfigInterface;
+use AKlump\EasyPerms\Config\DefaultDirectoryPermissions;
+use AKlump\EasyPerms\Config\DefaultFilePermissions;
+use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Helpers\GetConcretePaths;
 use AKlump\EasyPerms\Helpers\GetLabel;
 use AKlump\EasyPerms\Helpers\IsDir;
@@ -31,7 +33,11 @@ $START_DIR = getcwd() . '/';
     $filesystem = new Filesystem();
     $config_paths = $input->getArgument('config');
     $config_paths = array_map(fn($path) => Path::makeAbsolute($path, $START_DIR), $config_paths);
-    $config = (new LoadConfig())($config_paths);
+    $config_defaults = [
+      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+      ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
+    ];
+    $config = (new LoadConfig($config_defaults))($config_paths);
     $types = [
       ConfigInterface::READONLY => ['icon' => '📘️ '],
       ConfigInterface::DEFAULT => ['icon' => '☀️  '],

@@ -2,7 +2,7 @@
 
 namespace AKlump\EasyPerms\Helpers;
 
-use AKlump\EasyPerms\ConfigInterface;
+use AKlump\EasyPerms\Config\ConfigInterface;
 
 /**
  * Sort configuration keys into proper apply order.

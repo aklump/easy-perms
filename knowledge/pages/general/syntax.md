@@ -1,3 +1,8 @@
+<!--
+id: syntax
+tags: ''
+-->
+
 # Syntax Rules
 
 * The pattern matching rules are the same as used in [gitignore](https://git-scm.com/docs/gitignore#_pattern_format)
