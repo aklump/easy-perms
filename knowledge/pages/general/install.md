@@ -28,7 +28,7 @@ Decide if you will install this mingled with top-level dependencies or standalon
     }
     ```
 
-2. Then run `composer require --dev aklump/easy-perms:@dev`
+2. Then run `composer require aklump/easy-perms`
 3. Proceed to installing the controller.
 
 ## Install Stand-Alone
