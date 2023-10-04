@@ -19,11 +19,15 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
-if (file_exists(__DIR__ . '/../../../autoload.php')) {
-  require_once __DIR__ . '/../../../autoload.php';
-}
-else {
-  require_once dirname(__FILE__) . '/../vendor/autoload.php';
+foreach ([
+           __DIR__ . '/../../autoload.php',
+           __DIR__ . '/../vendor/autoload.php',
+           __DIR__ . '/vendor/autoload.php',
+         ] as $file) {
+  if (file_exists($file)) {
+    $class_loader = require_once $file;
+    break;
+  }
 }
 
 $START_DIR = getcwd() . '/';
