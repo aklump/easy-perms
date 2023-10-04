@@ -6,6 +6,7 @@ use AKlump\EasyPerms\Config\DefaultFilePermissions;
 use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Helpers\GetConcretePaths;
 use AKlump\EasyPerms\Helpers\GetLabel;
+use AKlump\EasyPerms\Helpers\HandleMemory;
 use AKlump\EasyPerms\Helpers\IsDir;
 use AKlump\EasyPerms\Helpers\SortPermissionTypes;
 use AKlump\EasyPerms\LoadConfig;
@@ -28,7 +29,7 @@ $START_DIR = getcwd() . '/';
   ->setVersion('0.0.0')
   ->addArgument('config', InputArgument::IS_ARRAY)
   ->setCode(function (InputInterface $input, OutputInterface $output) use ($START_DIR): int {
-
+    (new HandleMemory())();
     $start_time = microtime(TRUE);
     $filesystem = new Filesystem();
     $config_paths = $input->getArgument('config');
