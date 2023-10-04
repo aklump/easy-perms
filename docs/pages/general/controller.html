@@ -43,12 +43,10 @@
     <article class="col">
       <h1 class="mb-4 text-primary">Controller and Configuration</h1>
       <p>#1. As a matter of convention, I like to create an executable file as  <em>./bin/perms</em> in any application I work on, as the single point of execution for correcting permission issues. With that in mind...
-2. First, create the controller and config files:</p>
+2. First, create the controller file:</p>
 <pre><code class="shell">   j a
    mkdir -p bin/config
    touch bin/perms
-   touch bin/config/perms.yml
-   touch bin/config/perms.local.yml
    chmod u+x bin/perms
 </code></pre>
 <ol>
@@ -56,10 +54,17 @@
 <pre><code class="shell">#!/usr/bin/env bash
 s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp; s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
    
-$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
+$__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$@"
 </code></pre>
 </li>
+<li><p>Now create the configuration</p>
+<pre><code class="shell">j a
+cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
+</code></pre>
+</li>
+<li>Open and edit <em>bin/config/perms.yml</em> as necessary.</li>
 </ol>
+<h2>Local Configuration</h2>
     </article>
   </div>
 </main>

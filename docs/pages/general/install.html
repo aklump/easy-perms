@@ -43,7 +43,7 @@
     <article class="col">
       <h1 class="mb-4 text-primary">Installation</h1>
       <p>Decide if you will install this mingled with top-level dependencies or standalone. You may want to choose standalone if you discover dependency conflicts when installing top-level. Or you may want to choose standalone if you do not want to alter the root-level <code>minimum-stability</code> value.</p>
-<h2>Install project with Composer at top level.</h2>
+<h2>Install Project with Composer at Top Level.</h2>
 <ol>
 <li><p>Merge in the contents of <em>composer.json</em> as shown below, with your app's top-level <em>composer.json</em>. This step will add the private repository locations and the stability flags to allow these development packages.</p>
 <pre><code class="json"> {
@@ -64,13 +64,19 @@
 </li>
 <li><p>Then run <code>composer require --dev aklump/easy-perms:@dev</code></p>
 </li>
+<li>Proceed to installing the controller.</li>
 </ol>
 <h2>Install Stand-Alone</h2>
+<ol>
+<li><p>Execute the following:</p>
 <pre><code class="shell">j a
 mkdir -p opt/aklump
 cd opt/aklump
 composer create-project aklump/easy-perms --repository='{"type":"github","url":"https://github.com/aklump/easy-perms"}' --repository='{"type":"github","url":"https://github.com/aklump/gitignore"}' --stability=dev
 </code></pre>
+</li>
+<li>Proceed to installing the controller.</li>
+</ol>
     </article>
   </div>
 </main>
