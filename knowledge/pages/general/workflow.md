@@ -10,12 +10,13 @@ tags: ''
 
 ## Web Package
 
+1. Set only those execute permissions that are required to `bump build` in _config.yml_. All other configuration for `executable` should be written in _config.local.yml_.
+
 _build/00\_set\_live\_perms.sh_
 
 ```shell
 #!/usr/bin/env bash
 ./opt/aklump/easy-perms/vendor/bin/easy-perms "./bin/config/perms.yml"
-
 ```
 
 _dev/00\_set\_dev\_perms.sh_
