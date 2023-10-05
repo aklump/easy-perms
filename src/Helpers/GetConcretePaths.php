@@ -42,10 +42,10 @@ class GetConcretePaths {
    */
   public function __invoke(string $path): array {
     $return_only_directories = self::isDir($path);
-    if (file_exists($path) && !Analyzer::containsPattern($path)) {
-      $files = [
-        (new NormalizePath(dirname($path)))(basename($path)),
-      ];
+    $symlink_handler = new HandleSymlinks();
+    if (file_exists($path)) {
+      $files = $symlink_handler($path);
+      $files = array_map(fn($path) => (new NormalizePath(dirname($path)))(basename($path)), $files);
     }
     else {
       do {
@@ -62,8 +62,19 @@ class GetConcretePaths {
       $files = array_filter($files, function ($file) use ($matcher) {
         return $file && $matcher->matches($file);
       });
-      $files = array_values($files);
+
+      $may_contain_symlinks = array_values($files);
+      $keys = array_keys($may_contain_symlinks);
+      $size = count($keys);
+      $files = [];
+      for ($i = 0; $i < $size; $i++) {
+        $files = array_merge($files, $symlink_handler($may_contain_symlinks[$i]));
+      }
+      if (count($files) !== count($may_contain_symlinks)) {
+        $files = array_unique($files);
+      }
     }
+    sort($files);
 
     if ($return_only_directories) {
       $files = array_filter($files, fn($file) => self::isDir($file));

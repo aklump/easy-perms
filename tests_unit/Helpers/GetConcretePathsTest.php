@@ -46,6 +46,7 @@ class GetConcretePathsTest extends TestCase {
         'app/',
         'lorem_dir/',
         'lorem_file',
+        'lorem_symlink',
       ],
     ];
     $tests[] = [
@@ -70,6 +71,7 @@ class GetConcretePathsTest extends TestCase {
       [
         'lorem_dir/',
         'lorem_file',
+        'lorem_symlink',
       ],
     ];
     $tests[] = [
@@ -84,6 +86,20 @@ class GetConcretePathsTest extends TestCase {
       [
         'app/web/sites/all/files/',
         'app/web/sites/default/files/',
+      ],
+    ];
+    $tests[] = [
+      'lore?_symlink',
+      [
+        'lorem_file',
+        'lorem_symlink',
+      ],
+    ];
+    $tests[] = [
+      'lorem_symlink',
+      [
+        'lorem_file',
+        'lorem_symlink',
       ],
     ];
     $tests[] = [
@@ -120,6 +136,7 @@ class GetConcretePathsTest extends TestCase {
         'app/web/sites/sites.php',
         'lorem_dir/',
         'lorem_file',
+        'lorem_symlink',
       ],
     ];
 
