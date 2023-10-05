@@ -32,8 +32,8 @@
 
       </div>
       <div class="header__tags me-3">  </div>
-      <div class="header__page-numbers flex-shrink-1">12
-        / 12</div>
+      <div class="header__page-numbers flex-shrink-1">4
+        / 11</div>
     </div>
   </div>
 </header>
@@ -42,18 +42,20 @@
   <div class="row mb-5 pt-5">
     <article class="col">
       <h1 class="mb-4 text-primary">Controller and Configuration</h1>
-      <p>#1. As a matter of convention, I like to create an executable file as  <em>./bin/perms</em> in any application I work on, as the single point of execution for correcting permission issues. With that in mind...
-2. First, create the controller file:</p>
-<pre><code class="shell">   j a
-   mkdir -p bin/config
-   touch bin/perms
-   chmod u+x bin/perms
-</code></pre>
+      <blockquote class="blockquote"><p>As a matter of convention, I like to create an executable file as  <em>./bin/perms</em> in any application I work on, as the single point of action to assign proper file permissions.</p>
+</blockquote>
 <ol>
+<li><p>First, create the controller file:</p>
+<pre><code class="shell">j a
+mkdir -p bin/config
+touch bin/perms
+chmod u+x bin/perms
+</code></pre>
+</li>
 <li><p>Now paste these contents into <em>bin/perms</em>:</p>
 <pre><code class="shell">#!/usr/bin/env bash
 s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp; s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
-   
+chmod u+x $__DIR__/../opt/aklump/easy-perms/bin/easy-perms
 $__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$@"
 </code></pre>
 </li>
@@ -64,23 +66,27 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
 </li>
 <li>Open and edit <em>bin/config/perms.yml</em> as necessary.</li>
 </ol>
-<h2>Local Configuration</h2>
+<h2>Multiple and/or Local Configuration</h2>
 <ol>
-<li>You can pass multiple configuration to the controller, e.g.</li>
-</ol>
+<li><p>It is possible to pass multiple configuration paths to the controller, which are merged together. This is how you can have environment-specific overrides, e.g.</p>
 <pre><code class="bash">$__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
 </code></pre>
-<ol>
+</li>
 <li>Do not commit <em>perms.local.yml</em></li>
 <li>Use it for local-only, additional permissions.</li>
 </ol>
+<h2>Other Highlights</h2>
+<ul>
+<li>Both YAML and JSON is supported.</li>
+<li>See <em>json_schema/config.schema.json</em> for details of the configuration.</li>
+</ul>
     </article>
   </div>
 </main>
 
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
-                Last Update: <strong>10/4/2023</strong>
+                Last Update: <strong>10/5/2023</strong>
     </div>
   </footer>
 
@@ -92,7 +98,7 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
       bi-caret-left-fill"></i> Easy Perms</a>
   
     
-              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/usage.html" class="btn nav__prev-page js-nav__prev-page
+              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html" class="btn nav__prev-page js-nav__prev-page
     btn-primary"><i class="bi
       bi-caret-left-fill"></i></a>
   
@@ -103,8 +109,9 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
        aria-controls="table-of-contents"><i class="bi
            bi-list-ol"></i></a>
     
-              <span class="btn nav__next-page js-nav__next-page
-    btn-primary"></span>
+              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/workflow.html" class="btn nav__next-page js-nav__next-page
+    btn-primary"><i class="bi bi-file-earmark"></i> Workflow Strategy <i class="bi
+       bi-caret-right-fill"></i></a>
   
     
               <span class="btn nav__next-chapter btn-secondary "></span>
@@ -152,8 +159,8 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
               bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
     </li>
   
-                                    <li data-page="configuration" value="4">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/configuration.html">Configuration<span
+                                    <li data-page="controller" value="4">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration<span
               class="js-search-score
               badge
               bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
@@ -208,13 +215,6 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
               bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
     </li>
   
-                                    <li data-page="controller" value="12">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration<span
-              class="js-search-score
-              badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
-    </li>
-  
                               </ol>
       </div>
         
@@ -233,8 +233,8 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html">Installation</a>&nbsp;[General]
     </li>
   
-                                <li data-page="configuration" value="4">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/configuration.html">Configuration</a>&nbsp;[General]
+                                <li data-page="controller" value="4">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration</a>&nbsp;[General]
     </li>
   
                                 <li data-page="workflow" value="5">
@@ -265,10 +265,6 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/usage.html">Usage</a>&nbsp;[General]
     </li>
   
-                                <li data-page="controller" value="12">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration</a>&nbsp;[General]
-    </li>
-  
                   </ol>
           </div>
   </div>
@@ -294,7 +290,7 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html">Installation</a>
                                                 <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/configuration.html">Configuration</a>
+                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration</a>
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/workflow.html">Workflow Strategy</a>
                                                 <a class="list-group-item list-group-item-action"
@@ -309,8 +305,6 @@ cp opt/aklump/easy-perms/init/perms.yml bin/config/perms.yml
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog</a>
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/usage.html">Usage</a>
-                                                <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration</a>
                               </ul>
       </div>
     </div>
