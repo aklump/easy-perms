@@ -1,0 +1,13 @@
+# https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-file-permissions-and-ownership#special-considerations-for-settings-php
+default:
+  - ../../**
+readonly:
+  - .env
+  - ../../sites/*/
+  - ../../sites/*/settings*
+writeable:
+  - ../../private/*/files/
+  - ../../private/*/files/**
+  - ../../web/sites/*/files
+  - ../../web/sites/*/files/**
+executable:
