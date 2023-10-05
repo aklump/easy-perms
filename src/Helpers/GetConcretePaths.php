@@ -5,6 +5,7 @@ namespace AKlump\EasyPerms\Helpers;
 use AKlump\EasyPerms\Traits\PathHandlerTrait;
 use AKlump\GitIgnore\Analyzer;
 use AKlump\GitIgnore\Pattern;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * @url https://git-scm.com/docs/gitignore#_pattern_format
@@ -13,6 +14,20 @@ use AKlump\GitIgnore\Pattern;
 class GetConcretePaths {
 
   use PathHandlerTrait;
+
+  /**
+   * @var array|null
+   */
+  private $cache;
+
+  /**
+   * @param \Psr\SimpleCache\CacheInterface|NULL $filepath_cache
+   *   Passing a cache instance in most all cases will enhance performance, that
+   *   is decrease the time used to complete multiple calls.
+   */
+  public function __construct(CacheInterface $filepath_cache = NULL) {
+    $this->cache = $filepath_cache;
+  }
 
   /**
    * Get all concrete paths as matched by $path.
@@ -42,8 +57,8 @@ class GetConcretePaths {
         }
       } while ($start_dir && !is_dir("$start_dir"));
 
-      $files = (new GetFileList())($start_dir);
       $matcher = new Pattern($path);
+      $files = $this->getFileList($start_dir);
       $files = array_filter($files, function ($file) use ($matcher) {
         return $file && $matcher->matches($file);
       });
@@ -52,6 +67,22 @@ class GetConcretePaths {
 
     if ($return_only_directories) {
       $files = array_filter($files, fn($file) => self::isDir($file));
+    }
+
+    return $files;
+  }
+
+  private function getFileList(string $start_dir): array {
+    if (NULL !== $this->cache) {
+      if ($this->cache->has($start_dir)) {
+        $files = $this->cache->get($start_dir);
+      }
+    }
+    if (!isset($files)) {
+      $files = (new GetFileList())($start_dir);
+      if (NULL !== $this->cache) {
+        $this->cache->set($start_dir, $files);
+      }
     }
 
     return $files;

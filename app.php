@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use AKlump\EasyPerms\Cache;
 use AKlump\EasyPerms\Config\DefaultDirectoryPermissions;
 use AKlump\EasyPerms\Config\DefaultFilePermissions;
 use AKlump\EasyPerms\Config\ConfigInterface;
@@ -65,9 +66,10 @@ $START_DIR = getcwd() . '/';
       if (empty($config[$type])) {
         continue;
       }
+      $filepath_cache = new Cache();
       foreach ($config[$type] as $path) {
         $output->writeln(sprintf('<info>Checking %s</info>', $get_label($path)));
-        $items = (new GetConcretePaths())($path);
+        $items = (new GetConcretePaths($filepath_cache))($path);
         foreach ($items as $item) {
           $perms_to_set[$item] = [$meta];
           if ($is_dir($item)) {

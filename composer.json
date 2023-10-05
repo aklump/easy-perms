@@ -28,7 +28,8 @@
     "league/mime-type-detection": "^1.13",
     "crysalead/dir": "^2.0",
     "ext-json": "*",
-    "aklump/gitignore": "@dev"
+    "aklump/gitignore": "@dev",
+    "psr/simple-cache": "^1.0"
   },
   "license": "BSD-3-Clause",
   "bin": [
