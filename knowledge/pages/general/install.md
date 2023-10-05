@@ -29,7 +29,7 @@ Decide if you will install this mingled with top-level dependencies or standalon
     ```
 
 2. Then run `composer require aklump/easy-perms`
-3. Proceed to installing the controller.
+1. Proceed to [installing the controller](@controller).
 
 ## Install Stand-Alone
 
@@ -40,5 +40,23 @@ Decide if you will install this mingled with top-level dependencies or standalon
    mkdir -p opt/aklump
    cd opt/aklump
    composer create-project aklump/easy-perms --repository='{"type":"github","url":"https://github.com/aklump/easy-perms"}' --repository='{"type":"github","url":"https://github.com/aklump/gitignore"}' --stability=dev
+   echo "/vendor/" >> easy-perms/.gitignore
    ```
-1. Proceed to installing the controller.
+1. Proceed to [installing the controller](@controller).
+
+### Source Control Concerns with Stand-Alone
+
+* You should commit _opt/aklump/easy-perms/composer.lock_
+* You should not commit _opt/aklump/easy-perms/vendor_
+* In your deployment workflow, you must handle dependency installation, e.g. `cd opt/aklump/easy-config && composer install`
+
+### Updating Stand-Alone Version
+
+Just delete the _easy-perms/_ directory and recreate...
+
+   ```shell
+   j a
+   cd opt/aklump
+   rm -r easy-perms
+   composer create-project aklump/easy-perms --repository='{"type":"github","url":"https://github.com/aklump/easy-perms"}' --repository='{"type":"github","url":"https://github.com/aklump/gitignore"}' --stability=dev
+   ```

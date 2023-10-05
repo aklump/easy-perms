@@ -16,7 +16,7 @@ _build/00\_set\_live\_perms.sh_
 
 ```shell
 #!/usr/bin/env bash
-./opt/aklump/easy-perms/vendor/bin/easy-perms "./bin/config/perms.yml"
+./opt/aklump/easy-perms/vendor/bin/easy-perms ./bin/config/perms.yml
 ```
 
 _dev/00\_set\_dev\_perms.sh_
@@ -26,17 +26,19 @@ _dev/00\_set\_dev\_perms.sh_
 ```shell
 #!/usr/bin/env bash
 chmod u+x ./opt/aklump/easy-perms/vendor/bin/easy-perms
-./opt/aklump/easy-perms/vendor/bin/easy-perms "./bin/config/perms.yml" "./bin/config/perms.local.yml"
+./opt/aklump/easy-perms/vendor/bin/easy-perms ./bin/config/perms.yml ./bin/config/perms.local.yml
 
 ```
 
 ## Install/Deployment
 
-3. During deployment to live use `./bin/perms` to ensure the live perms are set correctly.
+1. During deployment to live use `./bin/perms` to ensure the live perms are set correctly.
 4. Better yet, do the last step as part of `./bin/install` by setting something like this:
 
 ```yaml
   pre_install_prod:
+    - cd opt/aklump/easy-config && composer install
+  post_install_prod:
     - bin/perms
 ```
 

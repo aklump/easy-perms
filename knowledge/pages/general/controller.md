@@ -3,10 +3,11 @@ id: controller
 tags: ''
 -->
 
-## Controller and Configuration
+# Controller and Configuration
 
-1. As a matter of convention, I like to create an executable file as  _./bin/perms_ in any application I work on, as the single point of execution for correcting permission issues. With that in mind...
-2. First, create the controller file:
+> As a matter of convention, I like to create an executable file as  _./bin/perms_ in any application I work on, as the single point of action to assign proper file permissions.
+
+1. First, create the controller file:
 
    ```shell
    j a
@@ -19,7 +20,7 @@ tags: ''
    ```shell
    #!/usr/bin/env bash
    s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] && s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
-   
+   chmod u+x $__DIR__/../opt/aklump/easy-perms/bin/easy-perms
    $__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$@"
    ```
 4. Now create the configuration
@@ -30,12 +31,17 @@ tags: ''
    ```
 5. Open and edit _bin/config/perms.yml_ as necessary.
 
-## Local Configuration
+## Multiple and/or Local Configuration
 
-1. You can pass multiple configuration to the controller, e.g.
+1. It is possible to pass multiple configuration paths to the controller, which are merged together. This is how you can have environment-specific overrides, e.g.
 
-```bash
-$__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
-```
+   ```bash
+   $__DIR__/../opt/aklump/easy-perms/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
+   ```
 2. Do not commit _perms.local.yml_
 3. Use it for local-only, additional permissions.
+
+## Other Highlights
+
+* Both YAML and JSON is supported.
+* See _json\_schema/config.schema.json_ for details of the configuration.

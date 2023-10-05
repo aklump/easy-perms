@@ -3,6 +3,7 @@ page_order:
   - syntax
   - install
   - configuration
+  - controller
   - workflow
   - permission_values
   - symlinks
@@ -11,4 +12,3 @@ page_order:
   - resources
   - changelog
   - usage
-  - controller
