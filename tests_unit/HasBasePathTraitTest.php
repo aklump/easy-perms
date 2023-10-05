@@ -24,9 +24,14 @@ class HasBasePathTraitTest extends TestCase {
     new Testable('sites*.php');
   }
 
-  public function testEmptyBasePathThrows() {
+  public function testMissingConstructorBasePathIsAllowed() {
+    $obj = new Testable();
+    $this->assertSame('', $obj->getBasePath());
+  }
+
+  public function testSetBasePathWithEmptyThrows() {
     $this->expectException(\InvalidArgumentException::class);
-    new Testable('');
+    (new Testable())->setBasePath('');
   }
 
 }

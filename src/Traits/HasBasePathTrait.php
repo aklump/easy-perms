@@ -8,10 +8,12 @@ use Symfony\Component\Filesystem\Path;
 
 trait HasBasePathTrait {
 
-  private string $basePath;
+  private string $basePath = '';
 
-  public function __construct(string $base_path) {
-    $this->setBasePath($base_path);
+  public function __construct(string $base_path = '') {
+    if ($base_path) {
+      $this->setBasePath($base_path);
+    }
   }
 
   public function getBasePath(): string {

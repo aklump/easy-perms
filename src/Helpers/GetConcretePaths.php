@@ -35,8 +35,9 @@ class GetConcretePaths {
    * @param string $path
    *   A file/dir matching rule or value.
    *
-   * @return array
-   *   All matched paths.
+   * @return string[]
+   *   All matched paths sorted alphabetically.  If a path is matched to a
+   *   symlink, the target of the symlink will be included in this list.
    *
    * @throws
    */
@@ -45,7 +46,7 @@ class GetConcretePaths {
     $symlink_handler = new HandleSymlinks();
     if (file_exists($path)) {
       $files = $symlink_handler($path);
-      $files = array_map(fn($path) => (new NormalizePath(dirname($path)))(basename($path)), $files);
+      $files = array_map(fn($path) => (new NormalizePath())($path), $files);
     }
     else {
       do {
@@ -62,20 +63,30 @@ class GetConcretePaths {
       $files = array_filter($files, function ($file) use ($matcher) {
         return $file && $matcher->matches($file);
       });
+      $files = array_values($files);
 
-      $may_contain_symlinks = array_values($files);
-      $keys = array_keys($may_contain_symlinks);
-      $size = count($keys);
-      $files = [];
+      // Include any possible symlink targets in our file list.
+      $size = count($files);
+      $resolved = [];
       for ($i = 0; $i < $size; $i++) {
-        $files = array_merge($files, $symlink_handler($may_contain_symlinks[$i]));
+        $path = $files[$i];
+        $symlink_resolution = $symlink_handler($path);
+        if (isset($symlink_resolution[1])) {
+          $resolved = array_merge($resolved, $symlink_resolution);
+        }
+        else {
+          $resolved[] = $path;
+        }
       }
-      if (count($files) !== count($may_contain_symlinks)) {
-        $files = array_unique($files);
+      if (count($files) !== count($resolved)) {
+        $files = array_unique($resolved);
+      }
+      else {
+        $files = $resolved;
       }
     }
-    sort($files);
 
+    sort($files);
     if ($return_only_directories) {
       $files = array_filter($files, fn($file) => self::isDir($file));
     }

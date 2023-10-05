@@ -17,7 +17,7 @@ class GetFileList {
   /**
    * @param string $start_dir
    *
-   * @return array
+   * @return string[]
    *   The start directory, plus all paths within it, recursively.
    * @throws \Exception
    */

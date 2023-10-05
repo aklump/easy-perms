@@ -13,12 +13,14 @@ class HandleSymlinks {
    *   it will only contain $path.
    */
   public function __invoke(string $path): array {
-    $files = [$path];
-    if (is_link($path)) {
-      $target = realpath($path);
-      if ($target && $target !== $path) {
-        $files[] = $target;
-      }
+    return $this->recursiveResolver($path);
+  }
+
+  private function recursiveResolver($value, array &$files = []) {
+    $files[] = (new NormalizePath())($value);
+    if (is_link($value)) {
+      $target = dirname($value) . '/' . readlink($value);
+      $this->recursiveResolver($target, $files);
     }
 
     return $files;

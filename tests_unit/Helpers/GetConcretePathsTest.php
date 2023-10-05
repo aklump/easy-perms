@@ -44,9 +44,11 @@ class GetConcretePathsTest extends TestCase {
       '*',
       [
         'app/',
+        'links/',
         'lorem_dir/',
         'lorem_file',
         'lorem_symlink',
+        'symlink_l2',
       ],
     ];
     $tests[] = [
@@ -134,9 +136,12 @@ class GetConcretePathsTest extends TestCase {
         'app/web/sites/default/settings.local.php',
         'app/web/sites/default/settings.php',
         'app/web/sites/sites.php',
+        'links/',
+        'links/symlink_l3',
         'lorem_dir/',
         'lorem_file',
         'lorem_symlink',
+        'symlink_l2',
       ],
     ];
 
