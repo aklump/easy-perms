@@ -7,7 +7,7 @@
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.1">
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css?ver=0.0.1">
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.1">
-    <title>Workflow Strategy | Easy Perms</title>
+    <title>Installation Alt | Easy Perms</title>
 </head>
 <body class="my-5">
 
@@ -32,7 +32,7 @@
 
       </div>
       <div class="header__tags me-3">  </div>
-      <div class="header__page-numbers flex-shrink-1">6
+      <div class="header__page-numbers flex-shrink-1">4
         / 12</div>
     </div>
   </div>
@@ -41,44 +41,61 @@
 <main class="container-md flex-column">
   <div class="row mb-5 pt-5">
     <article class="col">
-      <h1 class="mb-4 text-primary">Workflow Strategy</h1>
+      <h1 class="mb-4 text-primary">Installation Alt</h1>
       <ol>
-<li>Use <code>bump dev</code> when you want to begin developing to get the local perms correct.</li>
-<li>Use <code>bump build</code> to restore the live permissions before committing to the repo.</li>
-</ol>
-<h2>Web Package</h2>
-<ol>
-<li>Set only those execute permissions that are required to <code>bump build</code> in <em>config.yml</em>. All other configuration for <code>executable</code> should be written in <em>config.local.yml</em>.</li>
-</ol>
-<p><em>build/00_set_live_perms.sh</em></p>
-<pre><code class="shell">#!/usr/bin/env bash
-./opt/aklump/easy-perms/vendor/bin/easy-perms ./bin/config/perms.yml
+<li><p>Execute the following:</p>
+<pre><code class="shell">j a
+mkdir -p opt/aklump/easy-perms
+cd opt/aklump/easy-perms
+touch composer.json
+echo "/vendor/" &gt;&gt; .gitignore
 </code></pre>
-<p><em>dev/00_set_dev_perms.sh</em></p>
+</li>
+<li><p>Copy the contents to <em>opt/aklump/easy-perms/composer.json</em>.</p>
+<pre><code class="json"> {
+   "repositories": [
+     {
+       "type": "github",
+       "url": "https://github.com/aklump/easy-perms"
+     },
+     {
+       "type": "github",
+       "url": "https://github.com/aklump/gitignore"
+     }
+   ],
+   "minimum-stability": "dev",
+   "prefer-stable" : true
+ }
+</code></pre>
+</li>
+<li><p>Then run <code>composer require aklump/easy-perms</code></p>
+</li>
+<li>Proceed to <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">installing the controller</a>.</li>
+</ol>
+<h3>Extra Source Control Concerns with This Method</h3>
+<p>Because you are creating a second dependency library you need to take additional steps regarding source control and dependency management.</p>
 <ul>
-<li>Use <em>perms.local.yml</em> to set the extra executable permissions used in development only.</li>
+<li>You should commit <em>opt/aklump/easy-perms/composer.lock</em></li>
+<li>You should not commit <em>opt/aklump/easy-perms/vendor</em></li>
+<li>In your deployment workflow, you must handle dependency installation, e.g. <code>cd opt/aklump/easy-config &amp;&amp; composer install</code></li>
 </ul>
-<pre><code class="shell">#!/usr/bin/env bash
-chmod u+x ./opt/aklump/easy-perms/vendor/bin/easy-perms
-./opt/aklump/easy-perms/vendor/bin/easy-perms ./bin/config/perms.yml ./bin/config/perms.local.yml
-
+<h3>Updating Stand-Alone Version</h3>
+<pre><code class="shell">   j a
+   cd opt/aklump/easy-perms
+   composer update
 </code></pre>
-<h2>Install/Deployment</h2>
-<ol>
-<li>During deployment to live use <code>./bin/perms</code> to ensure the live perms are set correctly.</li>
-<li>Better yet, do the last step as part of <code>./bin/install</code> by setting something like this:</li>
-</ol>
-<pre><code class="yaml">  pre_install_prod:
-    - cd opt/aklump/easy-config &amp;&amp; composer install
-  post_install_prod:
-    - bin/perms
-</code></pre>
-<p><em>bin/perms</em></p>
+<h2>Controller Code</h2>
 <pre><code class="shell">#!/usr/bin/env bash
-s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp; s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
+s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P
+"$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp;
+s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
 
-$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
-
+chmod u+x $__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms
+$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms $__DIR__/config/perms.yml "$@"
+</code></pre>
+<h2>Create the Configuration File</h2>
+<pre><code class="shell">j a
+cp ./opt/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
 </code></pre>
     </article>
   </div>
@@ -101,7 +118,7 @@ $__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms "$__DIR__/config/perms.y
       bi-caret-left-fill"></i> Easy Perms</a>
   
     
-              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html" class="btn nav__prev-page js-nav__prev-page
+              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html" class="btn nav__prev-page js-nav__prev-page
     btn-primary"><i class="bi
       bi-caret-left-fill"></i></a>
   
@@ -112,8 +129,8 @@ $__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms "$__DIR__/config/perms.y
        aria-controls="table-of-contents"><i class="bi
            bi-list-ol"></i></a>
     
-              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/permission_values.html" class="btn nav__next-page js-nav__next-page
-    btn-primary"><i class="bi bi-file-earmark"></i> What Are the Permission Values? <i class="bi
+              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html" class="btn nav__next-page js-nav__next-page
+    btn-primary"><i class="bi bi-file-earmark"></i> Controller and Configuration <i class="bi
        bi-caret-right-fill"></i></a>
   
     

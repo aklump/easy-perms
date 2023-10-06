@@ -2,6 +2,7 @@ page_order:
   - readme
   - syntax
   - install
+  - install_standalone
   - configuration
   - controller
   - workflow
