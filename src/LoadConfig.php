@@ -90,18 +90,15 @@ class LoadConfig {
   }
 
   private function loadFile(string $path): array {
-    $mime = (new FinfoMimeTypeDetector())->detectMimeTypeFromPath($path);
-    switch ($mime) {
-      case 'application/json':
-        $config = json_decode(file_get_contents($path), TRUE);
-        break;
-
-      case 'text/yaml':
-        $config = Yaml::parseFile($path) ?? [];
-        break;
-
-      default:
-        throw new \InvalidArgumentException(sprintf('Invalid configuration file type: %s', $mime));
+    $extension = pathinfo($path, PATHINFO_EXTENSION);
+    if (preg_match('/ya?ml/i', $extension)) {
+      $config = Yaml::parseFile($path) ?? [];
+    }
+    elseif (preg_match('/json/i', $extension)) {
+      $config = json_decode(file_get_contents($path), TRUE);
+    }
+    else {
+      throw new \InvalidArgumentException(sprintf('Cannot load configuration as array from path: %s', $path));
     }
 
     return $config;
