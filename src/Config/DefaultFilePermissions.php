@@ -7,6 +7,7 @@ namespace AKlump\EasyPerms\Config;
  */
 class DefaultFilePermissions implements \JsonSerializable {
 
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return [
       'default' => 0640,
