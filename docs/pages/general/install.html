@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.3">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css?ver=0.0.3">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.3">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.4">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css?ver=0.0.4">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.4">
     <title>Installation | Easy Perms</title>
 </head>
 <body class="my-5">
@@ -62,7 +62,7 @@
  }
 </code></pre>
 </li>
-<li><p>Then run <code>composer require aklump/easy-perms</code></p>
+<li><p>Then run <code>composer require aklump/easy-perms:^0.0</code></p>
 </li>
 <li>Proceed to <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">installing the controller</a>.</li>
 </ol>
@@ -72,8 +72,8 @@ s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd 
 "$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp;
 s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
 
-chmod u+x $__DIR__/vendor/bin/easy-perms
-$__DIR__/vendor/bin/easy-perms $__DIR__/config/perms.yml "$@"
+chmod u+x "$__DIR__/vendor/bin/easy-perms"
+"$__DIR__/vendor/bin/easy-perms" "$__DIR__/config/perms.yml" "$@"
 </code></pre>
 <h2>Create the Configuration File</h2>
 <pre><code class="shell">j a
@@ -86,9 +86,9 @@ cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
                   Version:
-          <strong>0.0.3</strong>
+          <strong>0.0.4</strong>
           &bull;
-                Last Update: <strong>10/17/2023</strong>
+                Last Update: <strong>11/27/2023</strong>
     </div>
   </footer>
 
@@ -326,9 +326,9 @@ cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
   </div>
 </div>
 
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.3"></script>
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/dist/lunr.js?ver=0.0.3"></script>
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/knowledge.min.js?ver=0.0.3"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.4"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/dist/lunr.js?ver=0.0.4"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/knowledge.min.js?ver=0.0.4"></script>
 
 </body>
 </html>

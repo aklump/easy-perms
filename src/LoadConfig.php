@@ -9,6 +9,8 @@ use AKlump\EasyPerms\Config\ConfigInterface;
 
 class LoadConfig {
 
+  private array $defaults;
+
   public function __construct(array $defaults) {
     $this->defaults = $defaults;
   }
