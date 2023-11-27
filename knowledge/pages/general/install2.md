@@ -27,13 +27,11 @@ tags: ''
           "type": "github",
           "url": "https://github.com/aklump/gitignore"
         }
-      ],
-      "minimum-stability": "dev",
-      "prefer-stable" : true
+      ]
     }
     ```
 
-2. Then run `composer require aklump/easy-perms`
+2. Then run `composer require aklump/easy-perms:^0.0`
 1. Proceed to [installing the controller](@controller).
 
 ### Extra Source Control Concerns with This Method
@@ -41,8 +39,8 @@ tags: ''
 Because you are creating a second dependency library you need to take additional steps regarding source control and dependency management.
 
 * You should commit _opt/aklump/easy-perms/composer.lock_
-* You should not commit _opt/aklump/easy-perms/vendor_
-* In your deployment workflow, you must handle dependency installation, e.g. `cd opt/aklump/easy-config && composer install`
+* You should commit _opt/aklump/easy-perms/vendor_ ...
+* ... OR if not committing _vendor_ then in your deployment workflow, you must handle dependency installation, e.g. `cd opt/aklump/easy-config && composer install`
 
 ### Updating Stand-Alone Version
 
@@ -60,13 +58,13 @@ s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd 
 "$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] &&
 s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
 
-chmod u+x $__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms
-$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms $__DIR__/config/perms.yml "$@"
+chmod u+x "$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms"
+"$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms" "$__DIR__/config/perms.yml" "$@"
 ```
 
 ## Create the Configuration File
 
 ```shell
 j a
-cp ./opt/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
+cp ./opt/aklump/easy-perms/vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
 ```

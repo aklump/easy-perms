@@ -28,7 +28,7 @@ Decide if you will install this mingled with top-level dependencies or [standalo
     }
     ```
 
-2. Then run `composer require aklump/easy-perms`
+2. Then run `composer require aklump/easy-perms:^0.0`
 1. Proceed to [installing the controller](@controller).
 
 ## Controller Code
@@ -39,8 +39,8 @@ s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd 
 "$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] &&
 s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
 
-chmod u+x $__DIR__/vendor/bin/easy-perms
-$__DIR__/vendor/bin/easy-perms $__DIR__/config/perms.yml "$@"
+chmod u+x "$__DIR__/vendor/bin/easy-perms"
+"$__DIR__/vendor/bin/easy-perms" "$__DIR__/config/perms.yml" "$@"
 ```
 ## Create the Configuration File
 
