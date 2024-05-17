@@ -32,10 +32,11 @@ foreach ([
 }
 
 $START_DIR = getcwd() . '/';
+$version = Yaml::parseFile(__DIR__ . '/.web_package/config.yml')['version'];
 
 (new SingleCommandApplication())
   ->setName('perms')
-  ->setVersion('0.0.0')
+  ->setVersion($version)
   ->addArgument('config', InputArgument::IS_ARRAY)
   ->setCode(function (InputInterface $input, OutputInterface $output) use ($START_DIR): int {
     (new HandleMemory())();
