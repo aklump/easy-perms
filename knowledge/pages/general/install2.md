@@ -22,10 +22,6 @@ tags: ''
         {
           "type": "github",
           "url": "https://github.com/aklump/easy-perms"
-        },
-        {
-          "type": "github",
-          "url": "https://github.com/aklump/gitignore"
         }
       ]
     }
