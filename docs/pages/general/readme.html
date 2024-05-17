@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.6">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css?ver=0.0.6">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.6">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.8">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css?ver=0.0.8">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.8">
     <title>Easy Perms | Easy Perms</title>
 </head>
 <body class="my-5">
@@ -33,7 +33,7 @@
       </div>
       <div class="header__tags me-3">  </div>
       <div class="header__page-numbers flex-shrink-1">1
-        / 12</div>
+        / 8</div>
     </div>
   </div>
 </header>
@@ -42,9 +42,58 @@
   <div class="row mb-5 pt-5">
     <article class="col">
       <h1 class="mb-4 text-primary">Easy Perms</h1>
-      <p>Add this to a project to be able to easily manage file and directory permissions.</p>
+      <p><img class="img-fluid" src="../../images/easy-perms.jpg" alt="Banner" /></p>
+<p>Add this to a project to be able to easily manage file and directory permissions.</p>
 <p>The files in a web app are likely to require writeable and/or executable permissions on some files, but not most. Further, these permissions may need to be more permissive in development environments. It's time-consuming and may be confusing to keep all this in order. This tool allows you to set a baseline and then be only as permissive as necessary. It allows different configuration based on an environment. The management is simply to add paths or globs to a YAML or JSON file and then run the controller.</p>
 <p><strong>This project does not handle ownership of files, by design.</strong>  It assumes proper owner and group on all files, and merely sets the octal permissions.</p>
+<h2>Installation (w/Composer)</h2>
+<ol>
+<li><p>Because this is an unpublished package, you must define it's repository in
+your project's <em>composer.json</em> file. Add the following to <em>composer.json</em> in
+the <code>repositories</code> array:</p>
+<pre><code class="json"> {
+     "type": "github",
+     "url": "https://github.com/aklump/easy-perms"
+ }
+</code></pre>
+</li>
+<li><p>Require this package:</p>
+<pre><code> composer require aklump/easy-perms:^0.0
+</code></pre>
+</li>
+<li><p>Proceed to <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">installing the controller</a>.</p>
+</li>
+</ol>
+<p><strong>For security, install this above web root, and not in a location accessibly by the web.</strong></p>
+<h3>Controller installation</h3>
+<ol>
+<li>Copy the controller and commit to source control.</li>
+</ol>
+<pre><code class="shell">cp ./vendor/aklump/easy-perms/init/conroller.sh ./bin/perms
+</code></pre>
+<h2>Configuration</h2>
+<ol>
+<li><p>Copy the config file and commit to source control.</p>
+<pre><code class="shell"> cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
+</code></pre>
+</li>
+<li><p>Open the copied file and familiarize yourself and make adjustments as desired.</p>
+</li>
+</ol>
+<h3>Syntax Rules</h3>
+<ul>
+<li>The pattern matching rules are the same as used in <a href="https://git-scm.com/docs/gitignore#_pattern_format">gitignore</a></li>
+<li>If the path ends in a forward-slash <code>/</code> then only directories are matched, e.g. <code>/foo/bar/*/</code></li>
+<li><p>If the path does not end in a forward slash then both files and directories are matched, e.g. <code>/foo/bar/*</code></p>
+</li>
+<li><p>Use this tool to visualize your configuration.: <a href="https://www.digitalocean.com/community/tools/glob">https://www.digitalocean.com/community/tools/glob</a></p>
+</li>
+</ul>
+<h2>Usage</h2>
+<p>To apply the configured permissions do this:</p>
+<pre><code class="shell">./bin/perms
+</code></pre>
+<p>In normal mode, you will only see the path display if permissions were changed. If you want to see all paths, use the verbose option <code>-v</code>.</p>
     </article>
   </div>
 </main>
@@ -52,9 +101,9 @@
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
                   Version:
-          <strong>0.0.6</strong>
+          <strong>0.0.8</strong>
           &bull;
-                Last Update: <strong>11/28/2023</strong>
+                Last Update: <strong>5/17/2024</strong>
     </div>
   </footer>
 
@@ -76,8 +125,8 @@
        aria-controls="table-of-contents"><i class="bi
            bi-list-ol"></i></a>
     
-              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/syntax.html" class="btn nav__next-page js-nav__next-page
-    btn-primary"><i class="bi bi-file-earmark"></i> Syntax Rules <i class="bi
+              <a href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html" class="btn nav__next-page js-nav__next-page
+    btn-primary"><i class="bi bi-file-earmark"></i> Controller and Configuration <i class="bi
        bi-caret-right-fill"></i></a>
   
     
@@ -109,84 +158,56 @@
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/readme.html">Easy Perms<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="syntax" value="2">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/syntax.html">Syntax Rules<span
-              class="js-search-score
-              badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
-    </li>
-  
-                                    <li data-page="install" value="3">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html">Installation<span
-              class="js-search-score
-              badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
-    </li>
-  
-                                    <li data-page="install_standalone" value="4">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install_standalone.html">Installation Alt<span
-              class="js-search-score
-              badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
-    </li>
-  
-                                    <li data-page="controller" value="5">
+                                    <li data-page="controller" value="2">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="workflow" value="6">
+                                    <li data-page="workflow" value="3">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/workflow.html">Workflow Strategy<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="permission_values" value="7">
+                                    <li data-page="permission_values" value="4">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/permission_values.html">What Are the Permission Values?<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="symlinks" value="8">
+                                    <li data-page="symlinks" value="5">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/symlinks.html">Symlinks<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="troubleshooting" value="9">
+                                    <li data-page="troubleshooting" value="6">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/troubleshooting.html">Troubleshooting<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="resources" value="10">
+                                    <li data-page="resources" value="7">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/resources.html">Resources<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="changelog" value="11">
+                                    <li data-page="changelog" value="8">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog<span
               class="js-search-score
               badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
-    </li>
-  
-                                    <li data-page="usage" value="12">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/usage.html">Usage<span
-              class="js-search-score
-              badge
-              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+              bg-info rounded-pill badge-sm"></span></a>
     </li>
   
                               </ol>
@@ -196,51 +217,35 @@
               <h2 class="h4 mt-4">General</h2>
         <ol>
                                 <li data-page="readme" value="1">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/readme.html">Easy Perms</a>&nbsp;[General]
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/readme.html">Easy Perms</a>
     </li>
   
-                                <li data-page="syntax" value="2">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/syntax.html">Syntax Rules</a>&nbsp;[General]
+                                <li data-page="controller" value="2">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration</a>
     </li>
   
-                                <li data-page="install" value="3">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html">Installation</a>&nbsp;[General]
+                                <li data-page="workflow" value="3">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/workflow.html">Workflow Strategy</a>
     </li>
   
-                                <li data-page="install_standalone" value="4">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install_standalone.html">Installation Alt</a>&nbsp;[General]
+                                <li data-page="permission_values" value="4">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/permission_values.html">What Are the Permission Values?</a>
     </li>
   
-                                <li data-page="controller" value="5">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration</a>&nbsp;[General]
+                                <li data-page="symlinks" value="5">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/symlinks.html">Symlinks</a>
     </li>
   
-                                <li data-page="workflow" value="6">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/workflow.html">Workflow Strategy</a>&nbsp;[General]
+                                <li data-page="troubleshooting" value="6">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/troubleshooting.html">Troubleshooting</a>
     </li>
   
-                                <li data-page="permission_values" value="7">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/permission_values.html">What Are the Permission Values?</a>&nbsp;[General]
+                                <li data-page="resources" value="7">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/resources.html">Resources</a>
     </li>
   
-                                <li data-page="symlinks" value="8">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/symlinks.html">Symlinks</a>&nbsp;[General]
-    </li>
-  
-                                <li data-page="troubleshooting" value="9">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/troubleshooting.html">Troubleshooting</a>&nbsp;[General]
-    </li>
-  
-                                <li data-page="resources" value="10">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/resources.html">Resources</a>&nbsp;[General]
-    </li>
-  
-                                <li data-page="changelog" value="11">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog</a>&nbsp;[General]
-    </li>
-  
-                                <li data-page="usage" value="12">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/usage.html">Usage</a>&nbsp;[General]
+                                <li data-page="changelog" value="8">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog</a>
     </li>
   
                   </ol>
@@ -264,12 +269,6 @@
                                     <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/readme.html">Easy Perms</a>
                                                 <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/syntax.html">Syntax Rules</a>
-                                                <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install.html">Installation</a>
-                                                <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/install_standalone.html">Installation Alt</a>
-                                                <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/controller.html">Controller and Configuration</a>
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/workflow.html">Workflow Strategy</a>
@@ -283,17 +282,15 @@
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/resources.html">Resources</a>
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog</a>
-                                                <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/usage.html">Usage</a>
                               </ul>
       </div>
     </div>
   </div>
 </div>
 
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.6"></script>
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/dist/lunr.js?ver=0.0.6"></script>
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/knowledge.min.js?ver=0.0.6"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.8"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/lunr.js?ver=0.0.8"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/knowledge.min.js?ver=0.0.8"></script>
 
 </body>
 </html>
