@@ -1,11 +1,13 @@
 -
   format: markdown
-  path: ../
+  output: ../
   special:
     - copy images
-  include:
+  pages:
     - '**/README.md'
 #    - '**/CHANGELOG.md'
 -
   format: website
-  path: ../docs
+  output: ../docs
+  pages-ignore:
+    - '**/install_standalone.html'
