@@ -1,3 +1,4 @@
+- out of memory error if the config includes a path that does not exist in `executable`.  Found OvaGraph when I removed the private/opl directory.
 - if config file doesn't exist ask to create it
 - on create; copy from int
 - on copy from int; paste the default perms into config so it's transparent to user.
