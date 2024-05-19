@@ -80,7 +80,7 @@ cp ./easy-perms/init/perms.yml ./bin/config/perms.yml
 To apply the configured permission to your project at any time, execute the controller like this:
 
 ```shell
-☁  $ bin/perms -v
+$ bin/perms -v
 Checking bin/bind_book.sh
 Checking bin/easy-perms
 Checking bin/run_unit_tests.sh
@@ -93,7 +93,7 @@ Completed in 0.01 seconds.
 Permission setting was successful.
 ```
 
-Paths will print only if their permissions were changed. If you want to see more, that is to say, all paths, use the verbose option `-v`.
+Paths will print only if their permissions were changed. If you want to see more (as shown above), use the verbose option `-v`.
 
 ### Troubleshooting
 
