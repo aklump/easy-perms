@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.9">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css?ver=0.0.9">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.9">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.10">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/style.css?ver=0.0.10">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.10">
     <title>Easy Perms | Easy Perms</title>
 </head>
 <body class="my-5">
@@ -33,7 +33,7 @@
       </div>
       <div class="header__tags me-3">  </div>
       <div class="header__page-numbers flex-shrink-1">1
-        / 8</div>
+        / 6</div>
     </div>
   </div>
 </header>
@@ -65,24 +65,36 @@ the <code>repositories</code> array:</p>
 </li>
 </ol>
 <p><strong>For security, install this above web root, and not in a location accessibly by the web.</strong></p>
-<h3>Controller installation</h3>
+<h3>Controller and Configuration Files</h3>
 <ol>
-<li>Copy the controller and commit to source control.</li>
+<li>Copy the correct controller and commit to source control.</li>
+<li>The correct controller is <em>init/controller.sh</em> or if you used <code>create-project</code> then you must use <em>init/controller--create-project.sh</em>.</li>
 </ol>
-<pre><code class="shell">cp ./vendor/aklump/easy-perms/init/conroller.sh ./bin/perms
+<pre><code class="shell">mkdir -p ./bin/config
+cp ./vendor/aklump/easy-perms/init/controller.sh ./bin/perms
+chmod u+x ./bin/perms
+cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
+</code></pre>
+<h2>Alternative Stand-Alone Installation</h2>
+<p>If <code>composer require</code> fails, that is, if the dependencies of this project conflict with your application, you should install this using <code>composer create-project</code>, which creates a stand-alone installation. Copy and paste the following code, executed most likely from your
+repository root, and certainly above web root.</p>
+<pre><code class="shell">composer create-project aklump/easy-perms easy-perms --repository="{\"type\":\"github\",\"url\": \"https://github.com/aklump/easy-perms\"}" --stability=dev
+</code></pre>
+<p>The controller and configuration is altered slightly to the following:</p>
+<pre><code class="shell">mkdir -p ./bin/config
+cp ./easy-perms/init/controller--create-project.sh ./bin/perms
+chmod u+x ./bin/perms
+cp ./easy-perms/init/perms.yml ./bin/config/perms.yml
 </code></pre>
 <h2>Configuration</h2>
 <ol>
-<li><p>Copy the config file and commit to source control.</p>
-<pre><code class="shell"> cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
-</code></pre>
-</li>
-<li><p>Open the copied file and familiarize yourself and make adjustments as desired.</p>
-</li>
+<li>Open <em>bin/config/perms.yml</em>, familiarize yourself with it, then make adjustments as necessary.</li>
+<li>Add paths and path globs to each of: <code>default, readonly, writeable, executable</code> as is appropriate to your project.</li>
 </ol>
-<h3>Syntax Rules</h3>
+<h3>Pattern Syntax</h3>
 <ul>
 <li>The pattern matching rules are the same as used in <a href="https://git-scm.com/docs/gitignore#_pattern_format">gitignore</a></li>
+<li>Double asterix is supported, e.g. <code>/foo/**/*.php</code>.</li>
 <li>If the path ends in a forward-slash <code>/</code> then only directories are matched, e.g. <code>/foo/bar/*/</code></li>
 <li><p>If the path does not end in a forward slash then both files and directories are matched, e.g. <code>/foo/bar/*</code></p>
 </li>
@@ -90,10 +102,28 @@ the <code>repositories</code> array:</p>
 </li>
 </ul>
 <h2>Usage</h2>
-<p>To apply the configured permissions do this:</p>
-<pre><code class="shell">./bin/perms
+<p>To apply the configured permission to your project at any time, execute the controller like this:</p>
+<pre><code class="shell">☁  $ bin/perms -v
+Checking bin/bind_book.sh
+Checking bin/easy-perms
+Checking bin/run_unit_tests.sh
+Checking vendor/bin/phpunit
+0770 🛠  app.php
+0770 🛠  bin/bind_book.sh
+0770 🛠  bin/run_unit_tests.sh
+0770 🛠  vendor/bin/phpunit
+Completed in 0.01 seconds.
+Permission setting was successful.
 </code></pre>
-<p>In normal mode, you will only see the path display if permissions were changed. If you want to see all paths, use the verbose option <code>-v</code>.</p>
+<p>Paths will print only if their permissions were changed. If you want to see more, that is to say, all paths, use the verbose option <code>-v</code>.</p>
+<h3>Troubleshooting</h3>
+<p>If permissions are failing to set, try manually resetting all paths to 0755, e.g. <code>chmod -R 0755 *</code> (or <code>sudo chmod -R 0755 *</code> if necessary) from the application root.</p>
+<p>Now execute the controller and the permissions should apply correctly.</p>
+<h3>Things To Note</h3>
+<ul>
+<li>If a directory does not have execute permissions, then you cannot change permissions on it's contents.</li>
+<li><strong>Symlinks may cause some unexpected output</strong> depending upon how you write your configuration. More specifically it may appear that the same file keeps having the perms set. This is not to worry and things are most likely working correctly on the backend.</li>
+</ul>
     </article>
   </div>
 </main>
@@ -101,9 +131,9 @@ the <code>repositories</code> array:</p>
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
                   Version:
-          <strong>0.0.9</strong>
+          <strong>0.0.10</strong>
           &bull;
-                Last Update: <strong>5/17/2024</strong>
+                Last Update: <strong>5/19/2024</strong>
     </div>
   </footer>
 
@@ -182,28 +212,14 @@ the <code>repositories</code> array:</p>
               bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="symlinks" value="5">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/symlinks.html">Symlinks<span
-              class="js-search-score
-              badge
-              bg-info rounded-pill badge-sm"></span></a>
-    </li>
-  
-                                    <li data-page="troubleshooting" value="6">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/troubleshooting.html">Troubleshooting<span
-              class="js-search-score
-              badge
-              bg-info rounded-pill badge-sm"></span></a>
-    </li>
-  
-                                    <li data-page="resources" value="7">
+                                    <li data-page="resources" value="5">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/resources.html">Resources<span
               class="js-search-score
               badge
               bg-info rounded-pill badge-sm"></span></a>
     </li>
   
-                                    <li data-page="changelog" value="8">
+                                    <li data-page="changelog" value="6">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog<span
               class="js-search-score
               badge
@@ -232,19 +248,11 @@ the <code>repositories</code> array:</p>
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/permission_values.html">What Are the Permission Values?</a>
     </li>
   
-                                <li data-page="symlinks" value="5">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/symlinks.html">Symlinks</a>
-    </li>
-  
-                                <li data-page="troubleshooting" value="6">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/troubleshooting.html">Troubleshooting</a>
-    </li>
-  
-                                <li data-page="resources" value="7">
+                                <li data-page="resources" value="5">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/resources.html">Resources</a>
     </li>
   
-                                <li data-page="changelog" value="8">
+                                <li data-page="changelog" value="6">
       <a class="js-page-link" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog</a>
     </li>
   
@@ -275,10 +283,6 @@ the <code>repositories</code> array:</p>
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/permission_values.html">What Are the Permission Values?</a>
                                                 <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/symlinks.html">Symlinks</a>
-                                                <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/troubleshooting.html">Troubleshooting</a>
-                                                <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/resources.html">Resources</a>
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/bash/easy-perms/docs/pages/general/changelog.html">Changelog</a>
@@ -288,9 +292,9 @@ the <code>repositories</code> array:</p>
   </div>
 </div>
 
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.9"></script>
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/lunr.js?ver=0.0.9"></script>
-  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/knowledge.min.js?ver=0.0.9"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.10"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/lunr.js?ver=0.0.10"></script>
+  <script src="/Users/aklump/Code/Packages/bash/easy-perms/docs/dist/knowledge.min.js?ver=0.0.10"></script>
 
 </body>
 </html>
