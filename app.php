@@ -19,6 +19,7 @@ use Symfony\Component\Console\SingleCommandApplication;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Yaml\Yaml;
 
 foreach ([
            __DIR__ . '/../../autoload.php',

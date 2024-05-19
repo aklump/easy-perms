@@ -11,5 +11,8 @@ directory_permissions:
 default:
 #  - ../../**
 readonly:
+# - ../../web/default/settings*.php
 writeable:
+# - ../../web/default/files
 executable:
+# - ../../vendor/bin/*
