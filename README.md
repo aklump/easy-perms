@@ -49,7 +49,7 @@ If `composer require` fails, that is, if the dependencies of this project confli
 repository root, and certainly above web root.
 
 ```shell
-composer create-project aklump/easy-perms easy-perms --repository="{\"type\":\"github\",\"url\": \"https://github.com/aklump/easy-perms\"}" --stability=dev
+composer create-project aklump/easy-perms:^0.0 --repository="{\"type\":\"github\",\"url\": \"https://github.com/aklump/easy-perms\"}"
 ```
 
 The controller and configuration is altered slightly to the following:

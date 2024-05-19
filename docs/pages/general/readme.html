@@ -78,7 +78,7 @@ cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
 <h2>Alternative Stand-Alone Installation</h2>
 <p>If <code>composer require</code> fails, that is, if the dependencies of this project conflict with your application, you should install this using <code>composer create-project</code>, which creates a stand-alone installation. Copy and paste the following code, executed most likely from your
 repository root, and certainly above web root.</p>
-<pre><code class="shell">composer create-project aklump/easy-perms easy-perms --repository="{\"type\":\"github\",\"url\": \"https://github.com/aklump/easy-perms\"}" --stability=dev
+<pre><code class="shell">composer create-project aklump/easy-perms:^0.0 --repository="{\"type\":\"github\",\"url\": \"https://github.com/aklump/easy-perms\"}"
 </code></pre>
 <p>The controller and configuration is altered slightly to the following:</p>
 <pre><code class="shell">mkdir -p ./bin/config
