@@ -47,6 +47,8 @@ chmod u+x ./bin/perms
 cp ./easy-perms/init/perms.yml ./bin/config/perms.yml
 ```
 
+{{ composer.create_project_update_message }}
+
 ## Configuration
 
 1. Open _bin/config/perms.yml_, familiarize yourself with it, then make adjustments as necessary.

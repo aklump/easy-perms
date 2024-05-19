@@ -86,6 +86,8 @@ cp ./easy-perms/init/controller--create-project.sh ./bin/perms
 chmod u+x ./bin/perms
 cp ./easy-perms/init/perms.yml ./bin/config/perms.yml
 </code></pre>
+<p>With this method the only update path is to remove and then reinstall aklump/easy-perms, repeating the the <code>create-project</code> process.
+<strong>Running <code>composer update</code> will only update the dependencies and not aklump/easy-perms itself.</strong></p>
 <h2>Configuration</h2>
 <ol>
 <li>Open <em>bin/config/perms.yml</em>, familiarize yourself with it, then make adjustments as necessary.</li>
