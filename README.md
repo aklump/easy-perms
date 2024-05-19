@@ -31,27 +31,45 @@ The files in a web app are likely to require writeable and/or executable permiss
 
 **For security, install this above web root, and not in a location accessibly by the web.**
 
-### Controller installation
+### Controller and Configuration Files
 
-1. Copy the controller and commit to source control.
+1. Copy the correct controller and commit to source control.
+2. The correct controller is _init/controller.sh_ or if you used `create-project` then you must use _init/controller--create-project.sh_.
 
 ```shell
-cp ./vendor/aklump/easy-perms/init/conroller.sh ./bin/perms
+mkdir -p ./bin/config
+cp ./vendor/aklump/easy-perms/init/controller.sh ./bin/perms
+chmod u+x ./bin/perms
+cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
+```
+
+## Alternative Stand-Alone Installation
+
+If `composer require` fails, that is, if the dependencies of this project conflict with your application, you should install this using `composer create-project`, which creates a stand-alone installation. Copy and paste the following code, executed most likely from your
+repository root, and certainly above web root.
+
+```shell
+composer create-project aklump/easy-perms easy-perms --repository="{\"type\":\"github\",\"url\": \"https://github.com/aklump/easy-perms\"}" --stability=dev
+```
+
+The controller and configuration is altered slightly to the following:
+
+```shell
+mkdir -p ./bin/config
+cp ./easy-perms/init/controller--create-project.sh ./bin/perms
+chmod u+x ./bin/perms
+cp ./easy-perms/init/perms.yml ./bin/config/perms.yml
 ```
 
 ## Configuration
 
-1. Copy the config file and commit to source control.
+1. Open _bin/config/perms.yml_, familiarize yourself with it, then make adjustments as necessary.
+2. Add paths and path globs to each of: `default, readonly, writeable, executable` as is appropriate to your project.
 
-    ```shell
-    cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
-    ```
-
-1. Open the copied file and familiarize yourself and make adjustments as desired.
-
-### Syntax Rules
+### Pattern Syntax
 
 * The pattern matching rules are the same as used in [gitignore](https://git-scm.com/docs/gitignore#_pattern_format)
+* Double asterix is supported, e.g. `/foo/**/*.php`.
 * If the path ends in a forward-slash `/` then only directories are matched, e.g. `/foo/bar/*/`
 * If the path does not end in a forward slash then both files and directories are matched, e.g. `/foo/bar/*`
 
@@ -59,10 +77,31 @@ cp ./vendor/aklump/easy-perms/init/conroller.sh ./bin/perms
 
 ## Usage
 
-To apply the configured permissions do this:
+To apply the configured permission to your project at any time, execute the controller like this:
 
 ```shell
-./bin/perms
+☁  $ bin/perms -v
+Checking bin/bind_book.sh
+Checking bin/easy-perms
+Checking bin/run_unit_tests.sh
+Checking vendor/bin/phpunit
+0770 🛠  app.php
+0770 🛠  bin/bind_book.sh
+0770 🛠  bin/run_unit_tests.sh
+0770 🛠  vendor/bin/phpunit
+Completed in 0.01 seconds.
+Permission setting was successful.
 ```
 
-In normal mode, you will only see the path display if permissions were changed. If you want to see all paths, use the verbose option `-v`.
+Paths will print only if their permissions were changed. If you want to see more, that is to say, all paths, use the verbose option `-v`.
+
+### Troubleshooting
+
+If permissions are failing to set, try manually resetting all paths to 0755, e.g. `chmod -R 0755 *` (or `sudo chmod -R 0755 *` if necessary) from the application root.
+
+Now execute the controller and the permissions should apply correctly.
+
+### Things To Note
+
+* If a directory does not have execute permissions, then you cannot change permissions on it's contents.
+* **Symlinks may cause some unexpected output** depending upon how you write your configuration. More specifically it may appear that the same file keeps having the perms set. This is not to worry and things are most likely working correctly on the backend.
