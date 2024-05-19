@@ -22,9 +22,9 @@ use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
 foreach ([
-           __DIR__ . '/../../autoload.php',
-           __DIR__ . '/../vendor/autoload.php',
            __DIR__ . '/vendor/autoload.php',
+           __DIR__ . '/../vendor/autoload.php',
+           __DIR__ . '/../../autoload.php',
          ] as $file) {
   if (file_exists($file)) {
     $class_loader = require_once $file;
