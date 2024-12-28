@@ -21,8 +21,9 @@ The files in a web app are likely to require writeable and/or executable permiss
 
 ### Controller and Configuration Files
 
-1. Copy the correct controller and commit to source control.
-2. The correct controller is _init/controller.sh_ or if you used `create-project` then you must use _init/controller--create-project.sh_.
+1. See snippet below...
+2. Copy the correct controller and commit to source control.
+3. The correct controller is _init/controller.sh_ or if you used `create-project` then you must use _init/controller--create-project.sh_.
 
 ```shell
 mkdir -p ./bin/config
@@ -94,3 +95,4 @@ Now execute the controller and the permissions should apply correctly.
 * If a directory does not have execute permissions, then you cannot change permissions on it's contents.
 * **Symlinks may cause some unexpected output** depending upon how you write your configuration. More specifically it may appear that the same file keeps having the perms set. This is not to worry and things are most likely working correctly on the backend.
 
+{{ funding|raw }}

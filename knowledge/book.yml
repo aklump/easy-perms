@@ -1,1 +1,14 @@
-title: Easy Perms
+title: 'Easy Perms'
+uuid: 5b98aba0-bc9b-4de6-91ea-4c42f071700d
+chapters:
+  -
+    id: general
+    title: General
+    pages:
+      - changelog
+      - readme
+      - controller
+      - install_standalone
+      - permission_values
+      - resources
+      - workflow
