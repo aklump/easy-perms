@@ -52,7 +52,9 @@ cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
 If `composer require` fails, that is, if the dependencies of this project conflict with your application, you should install this using `composer create-project`, which creates a stand-alone installation. Copy and paste the following code, executed most likely from your
 repository root, and certainly above web root.
 
+```
 composer create-project aklump/easy-perms:^0.0 --repository="{\"type\":\"github\",\"url\": \"https://github.com/aklump/easy-perms\"}"
+```
 
 The controller and configuration is altered slightly to the following:
 
@@ -105,6 +107,11 @@ Paths will print only if their permissions were changed. If you want to see more
 If permissions are failing to set, try manually resetting all paths to 0755, e.g. `chmod -R 0755 *` (or `sudo chmod -R 0755 *` if necessary) from the application root.
 
 Now execute the controller and the permissions should apply correctly.
+
+More information may be available in the PHP error log, here is an example:
+
+1. Find the path to the php_error.log: `php -i | grep error_log`
+2. `tail /Applications/MAMP/logs/php_error.log`
 
 ### Things To Note
 
