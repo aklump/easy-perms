@@ -5,10 +5,10 @@ chapters:
     id: general
     title: General
     pages:
-      - changelog
       - readme
       - controller
       - install_standalone
       - permission_values
-      - resources
       - workflow
+      - resources
+      - changelog
