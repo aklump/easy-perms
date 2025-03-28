@@ -16,8 +16,8 @@ The files in a web app are likely to require writeable and/or executable permiss
    
     ```json
     {
-     "type": "github",
-     "url": "https://github.com/aklump/gitignore"
+     "type": "composer",
+     "url": "https://packages.intheloftstudios.com"
     },
     {
      "type": "github",
