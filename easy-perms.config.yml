@@ -1,5 +1,5 @@
 executable:
   - bin/bind_book.sh
-  - bin/easy-perms
-  - bin/run_phpunit_tests.sh
+  - bin/perms.sh
+  - bin/run_*_tests.sh
   - vendor/bin/phpunit

@@ -8,8 +8,6 @@ s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd 
 s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
 
 base="$__DIR__/../"
-[[ -d "$base/.easy-perms" ]] && base="$base/.easy-perms"
 base="$(cd "$base" && pwd)"
-
-chmod u+x "$base/vendor/bin/easy-perms"
-"$base/vendor/bin/easy-perms" apply "$__DIR__/config/easy-perms.yml" "$@"
+chmod u+x "$base/easy-perms"
+"$base/easy-perms" apply "$base/easy-perms.config.yml" "$@"
