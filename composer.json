@@ -3,8 +3,12 @@
   "type": "project",
   "autoload": {
     "psr-4": {
-      "AKlump\\EasyPerms\\": "src/",
-      "AKlump\\EasyPerms\\Tests\\": "tests_unit/"
+      "AKlump\\EasyPerms\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AKlump\\EasyPerms\\Tests\\": "tests_phpunit/"
     }
   },
   "repositories": [

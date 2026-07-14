@@ -182,7 +182,9 @@ class GetConcretePathsTest extends TestCase {
   public function testInvoke(string $path, $expected) {
     $base = $this->getBasePath();
     $expected = array_map(fn($path) => "$base/$path", $expected);
-    $this->assertSame($expected, (new GetConcretePaths())("$base/$path"));
+    $actual = (new GetConcretePaths())("$base/$path");
+    $actual = array_map(fn($item) => is_array($item) ? $item['path'] : $item, $actual);
+    $this->assertSame($expected, $actual);
   }
 
 }

@@ -10,8 +10,8 @@ use AKlump\EasyPerms\Helpers\HandleMemory;
 class HandleMemoryTest extends \PHPUnit\Framework\TestCase {
 
   public function testInvokeDoesNothingWhenExistingAboveClassMinimum() {
-    $existing = '512M';
-    $this->assertLessThan($existing, HandleMemory::MINIMUM);
+    $existing = '768M';
+    $this->assertGreaterThan(intval(HandleMemory::MINIMUM), intval($existing));
 
     ini_set('memory_limit', $existing);
     (new HandleMemory())();
@@ -20,7 +20,7 @@ class HandleMemoryTest extends \PHPUnit\Framework\TestCase {
 
   public function testInvokeIncreasesWhenExistingBelowClassMinimum() {
     $existing = '128M';
-    $this->assertGreaterThan($existing, HandleMemory::MINIMUM);
+    $this->assertLessThan(intval(HandleMemory::MINIMUM), intval($existing));
 
     ini_set('memory_limit', $existing);
     (new HandleMemory())();

@@ -69,7 +69,9 @@ class GetFileListTest extends TestCase {
   public function testInvokeReturnsExpectedArray(string $start_dir, array $list) {
     $base = $this->getBasePath();
     $list = array_map(fn($path) => "$base/$path", $list);
-    $this->assertSame($list, (new GetFileList())("$base/$start_dir"));
+    $actual = (new GetFileList())("$base/$start_dir");
+    $actual = array_map(fn($item) => is_array($item) ? $item['path'] : $item, $actual);
+    $this->assertSame($list, $actual);
   }
 
   public function testDurationPublicVariableIsFloat() {
