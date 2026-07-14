@@ -13,6 +13,7 @@ default:
 readonly:
 # - ../../web/default/settings*.php
 writeable:
-# - ../../web/default/files
+# - ../../private/default/files/*
+# - ../../web/sites/default/files/*
 executable:
 # - ../../vendor/bin/*

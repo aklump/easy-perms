@@ -7,8 +7,7 @@ chapters:
     pages:
       - readme
       - controller
-      - install_standalone
+      - drupal
       - permission_values
       - workflow
-      - resources
       - changelog

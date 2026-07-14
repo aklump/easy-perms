@@ -9,5 +9,3 @@
 -
   format: website
   output: ../docs
-  pages-ignore:
-    - '**/install_standalone.html'

@@ -13,49 +13,26 @@ The files in a web app are likely to require writeable and/or executable permiss
 
 **This project does not handle ownership of files, by design.**  It assumes proper owner and group on all files, and merely sets the octal permissions.
 
-{{ composer.install|raw }}
-
-1. Proceed to [installing the controller](@controller).
-
 **For security, install this above web root, and not in a location accessibly by the web.**
 
-### Controller and Configuration Files
-
-1. See snippet below...
-2. Copy the correct controller and commit to source control.
-3. The correct controller is _init/controller.sh_ or if you used `create-project` then you must use _init/controller--create-project.sh_.
-
-```shell
-mkdir -p ./bin/config
-cp ./vendor/aklump/easy-perms/init/controller.sh ./bin/perms
-chmod u+x ./bin/perms
-cp ./vendor/aklump/easy-perms/init/perms.yml ./bin/config/perms.yml
-```
-
-## Alternative Stand-Alone Installation
-
-If `composer require` fails, that is, if the dependencies of this project conflict with your application, you should install this using `composer create-project`, which creates a stand-alone installation. Copy and paste the following code, executed most likely from your
-repository root, and certainly above web root.
-
-```
-{{ composer.create_project|raw }}
-```
-
-The controller and configuration is altered slightly to the following:
-
-```shell
-mkdir -p ./bin/config
-cp ./easy-perms/init/controller--create-project.sh ./bin/perms
-chmod u+x ./bin/perms
-cp ./easy-perms/init/perms.yml ./bin/config/perms.yml
-```
-
-{{ composer.create_project_update_message }}
+{{ composer.install }}
 
 ## Configuration
 
-1. Open _bin/config/perms.yml_, familiarize yourself with it, then make adjustments as necessary.
-2. Add paths and path globs to each of: `default, readonly, writeable, executable` as is appropriate to your project.
+```shell
+touch./bin/perms
+chmod u+x ./bin/perms
+mkdir -p ./bin/config
+touch ./bin/config/perms.yml
+```
+
+{{ snippet.controller_sh|fenced }}
+{{ snippet.perms_yml|fenced }}
+
+1. Copy the controller code to `./bin/perms`
+2. Copy the default configuration shown above to `./bin/config`.
+3. Make adjustments as necessary.
+4. Add paths and path globs to each of: `default, readonly, writeable, executable` as is appropriate to your project.
 
 ### Pattern Syntax
 
@@ -101,5 +78,7 @@ More information may be available in the PHP error log, here is an example:
 
 * If a directory does not have execute permissions, then you cannot change permissions on it's contents.
 * **Symlinks may cause some unexpected output** depending upon how you write your configuration. More specifically it may appear that the same file keeps having the perms set. This is not to worry and things are most likely working correctly on the backend.
+
+{{ composer.sandbox_install }}
 
 {{ funding|raw }}

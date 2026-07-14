@@ -1,8 +1,7 @@
 ## Critical
 
 - symlinks and targets should be handled as a single one, not requiring separate config entries, either target or symlink must expand to all paths and apply perms.
-- remove "url": "https://github.com/aklump/easy-perms" from README; this is a problem with the Knowledge plugin and packages.inthe...
-- why is it so damn slow on my local machine compared to the remove server? Is it Lando?
+- why is it so darn slow on my local machine compared to the remote server? Is it Lando?
 
 ## Normal
 

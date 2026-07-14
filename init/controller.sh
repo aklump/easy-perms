@@ -7,5 +7,9 @@ s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd 
 "$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] &&
 s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
 
-chmod u+x "$__DIR__/../vendor/bin/easy-perms"
-"$__DIR__/../vendor/bin/easy-perms" "$__DIR__/config/perms.yml" "$@"
+base="$__DIR__/../"
+[[ -d "$base/.easy-perms" ]] && base="$base/.easy-perms"
+base="$(cd "$base" && pwd)"
+
+chmod u+x "$base/vendor/bin/easy-perms"
+"$base/vendor/bin/easy-perms" "$__DIR__/config/perms.yml" "$@"

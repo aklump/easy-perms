@@ -16,7 +16,7 @@ _build/00\_set\_live\_perms.sh_
 
 ```shell
 #!/usr/bin/env bash
-./opt/aklump/easy-perms/vendor/bin/easy-perms ./bin/config/perms.yml
+...vendor/bin/easy-perms ./bin/config/perms.yml
 ```
 
 _dev/00\_set\_dev\_perms.sh_
@@ -25,8 +25,8 @@ _dev/00\_set\_dev\_perms.sh_
 
 ```shell
 #!/usr/bin/env bash
-chmod u+x ./opt/aklump/easy-perms/vendor/bin/easy-perms
-./opt/aklump/easy-perms/vendor/bin/easy-perms ./bin/config/perms.yml ./bin/config/perms.local.yml
+chmod u+x ...vendor/bin/easy-perms
+...vendor/bin/easy-perms ./bin/config/perms.yml ./bin/config/perms.local.yml
 
 ```
 
@@ -48,6 +48,6 @@ _bin/perms_
 #!/usr/bin/env bash
 s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] && s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
 
-$__DIR__/../opt/aklump/easy-perms/vendor/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
+$__DIR__/....vendor/bin/easy-perms "$__DIR__/config/perms.yml" "$__DIR__/config/perms.local.yml" "$@"
 
 ```
