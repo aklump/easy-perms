@@ -11,19 +11,19 @@ use AKlump\EasyPerms\Helpers\HandleMemory;
 use AKlump\EasyPerms\Helpers\SortPermissionTypes;
 use AKlump\EasyPerms\LoadConfig;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\SingleCommandApplication;
-use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
 foreach ([
-           __DIR__ . '/vendor/autoload.php',
-           __DIR__ . '/../vendor/autoload.php',
-           __DIR__ . '/../../autoload.php',
+             __DIR__ . '/vendor/autoload.php',
+             __DIR__ . '/../vendor/autoload.php',
+             __DIR__ . '/../../autoload.php',
          ] as $file) {
   if (file_exists($file)) {
     $class_loader = require_once $file;
@@ -35,119 +35,182 @@ $START_DIR = getcwd() . '/';
 $version = Yaml::parseFile(__DIR__ . '/.web_package/config.yml')['version'];
 
 (new SingleCommandApplication())
-  ->setName('perms')
-  ->setVersion($version)
-  ->addArgument('config', InputArgument::IS_ARRAY)
-  ->setCode(function (InputInterface $input, OutputInterface $output) use ($START_DIR): int {
-    (new HandleMemory())();
-    $start_time = microtime(TRUE);
-    $filesystem = new Filesystem();
-    $config_paths = $input->getArgument('config');
-    $config_paths = array_map(fn($path) => Path::makeAbsolute($path, $START_DIR), $config_paths);
-    $config_defaults = [
-      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
-      ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
-    ];
-    $config = (new LoadConfig($config_defaults))($config_paths);
-    $types = [
-      ConfigInterface::READONLY => ['icon' => '📘️ '],
-      ConfigInterface::DEFAULT => ['icon' => '☀️  '],
-      ConfigInterface::WRITEABLE => ['icon' => '✏️  '],
-      ConfigInterface::EXECUTABLE => ['icon' => '🛠  '],
-    ];
-    $apply_order = (new SortPermissionTypes())(array_keys($types));
+    ->setName('perms')
+    ->setVersion($version)
+    ->addArgument('config', InputArgument::IS_ARRAY)
+    ->setCode(function (InputInterface $input, OutputInterface $output) use ($START_DIR): int {
+      (new HandleMemory())();
+      $start_time = microtime(TRUE);
+      $filesystem = new Filesystem();
+      $config_paths = $input->getArgument('config');
+      $config_paths = array_map(fn($path) => Path::makeAbsolute($path, $START_DIR), $config_paths);
+      $config_defaults = [
+          ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+          ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
+      ];
+      $config = (new LoadConfig($config_defaults))($config_paths);
+      $types = [
+          ConfigInterface::READONLY => ['icon' => '📘️ '],
+          ConfigInterface::DEFAULT => ['icon' => '☀️  '],
+          ConfigInterface::WRITEABLE => ['icon' => '✏️  '],
+          ConfigInterface::EXECUTABLE => ['icon' => '🛠  '],
+      ];
+      $apply_order = (new SortPermissionTypes())(array_keys($types));
 
-    $failures = [];
-    $perms_to_set = [];
-    $get_label = new GetLabel();
-    $filepath_cache = new Cache();
-    $get_concrete_paths = new GetConcretePaths($filepath_cache);
+      $failures = [];
+      $perms_to_set = [];
+      $get_label = new GetLabel();
+      $filepath_cache = new Cache();
+      $get_concrete_paths = new GetConcretePaths($filepath_cache);
 
-    foreach ($apply_order as $type) {
-      $meta = $types[$type];
-      if (empty($config[$type])) {
-        continue;
-      }
-      foreach ($config[$type] as $path) {
-        $output->writeln(sprintf('<info>Checking %s</info>', $get_label($path)));
-        $items = $get_concrete_paths($path);
-        foreach ($items as $data) {
-          $item = $data['path'];
-          $is_item_dir = $data['is_dir'];
-          $current_perms = $data['perms'] ?? NULL;
-          $perms_to_set[$item] = [$meta];
-          if ($is_item_dir) {
-            $perms_to_set[$item][] = (string) $config[ConfigInterface::DIRECTORY_PERMISSIONS][$type];
+      $is_verbose = $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE;
+      $is_very_verbose = $output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE;
+      $progress_bar = NULL;
+      if (!$is_very_verbose) {
+        $output->writeln('<info>Calculating permissions...</info>');
+        $total_patterns = 0;
+        foreach ($apply_order as $type) {
+          if (!empty($config[$type])) {
+            $total_patterns += count($config[$type]);
           }
-          else {
-            $perms_to_set[$item][] = (string) $config[ConfigInterface::FILE_PERMISSIONS][$type];
+        }
+        $progress_bar = new ProgressBar($output, $total_patterns);
+        $progress_bar->setFormat("%current%/%max% [%bar%]");
+        $progress_bar->start();
+      }
+
+      foreach ($apply_order as $type) {
+        $meta = $types[$type];
+        if (empty($config[$type])) {
+          continue;
+        }
+        foreach ($config[$type] as $path) {
+          $label = $get_label($path);
+          if ($is_very_verbose) {
+            $output->writeln(sprintf('<info>Calculating permissions: %s</info>', $label));
           }
-          $perms_to_set[$item][] = $current_perms;
-          $perms_to_set[$item][] = $data['realpath'] ?? NULL;
+          elseif ($progress_bar) {
+            $progress_bar->advance();
+          }
+          $items = $get_concrete_paths($path);
+          foreach ($items as $data) {
+            $item = $data['path'];
+            $is_item_dir = $data['is_dir'];
+            $current_perms = $data['perms'] ?? NULL;
+            $perms_to_set[$item] = [$meta];
+            if ($is_item_dir) {
+              $perms_to_set[$item][] = (string) $config[ConfigInterface::DIRECTORY_PERMISSIONS][$type];
+            }
+            else {
+              $perms_to_set[$item][] = (string) $config[ConfigInterface::FILE_PERMISSIONS][$type];
+            }
+            $perms_to_set[$item][] = $current_perms;
+            $perms_to_set[$item][] = $data['realpath'] ?? NULL;
+          }
+          unset($items);
         }
-        unset($items);
       }
-    }
 
-    ksort($perms_to_set);
+      ksort($perms_to_set);
 
-    // Second, set the perms for all paths.
-    $processed_realpaths = [];
-    foreach ($perms_to_set as $item => $data) {
-      list($meta, $perms, $current, $realpath) = $data;
-      if ($realpath && isset($processed_realpaths[$realpath])) {
-        if ($processed_realpaths[$realpath]) {
-          $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item));
+      if ($is_verbose || $is_very_verbose) {
+        $progress_bar->finish();
+        $output->writeln('');
+        $progress_bar = NULL;
+      }
+
+      if ($progress_bar) {
+        $output->writeln('');
+        $output->writeln('<info>Applying permissions...</info>');
+        $count = count($perms_to_set);
+        if ($count > 0) {
+          $progress_bar->setMaxSteps($count);
+          $progress_bar->setFormat("%current%/%max% [%bar%] %percent:3s%%");
+          $progress_bar->setProgress(0);
         }
-        continue;
+        else {
+          $progress_bar->finish();
+          $output->writeln('');
+          $progress_bar = NULL;
+        }
       }
 
-      try {
-        if ($current === NULL) {
-          $p = @fileperms($item);
-          if ($p === FALSE && !file_exists($item)) {
-            // The file doesn't exist; it's probably a broken symlink or a 
-            // symlink target that is missing. Skip without error.
+      // Second, set the perms for all paths.
+      $processed_realpaths = [];
+      foreach ($perms_to_set as $item => $data) {
+        $label = $get_label($item);
+        if ($progress_bar) {
+          $progress_bar->advance();
+        }
+        list($meta, $perms, $current, $realpath) = $data;
+        if ($realpath && isset($processed_realpaths[$realpath])) {
+          if ($is_very_verbose) {
+            $output->writeln(sprintf("%s %s%s", $perms, $meta['icon'], $label));
+          }
+          continue;
+        }
+
+        try {
+          if ($current === NULL) {
+            $p = @fileperms($item);
+            if ($p === FALSE && !file_exists($item)) {
+              // The file doesn't exist; it's probably a broken symlink or a
+              // symlink target that is missing. Skip without error.
+              continue;
+            }
+            $current = $p !== FALSE ? substr(decoct($p), -4) : NULL;
+          }
+          if ($current === $perms) {
+            if ($realpath) {
+              $processed_realpaths[$realpath] = TRUE;
+            }
+            if ($is_very_verbose) {
+              $output->writeln(sprintf("%s %s%s", $perms, $meta['icon'], $label));
+            }
             continue;
           }
-          $current = $p !== FALSE ? substr(decoct($p), -4) : NULL;
-        }
-        if ($current === $perms) {
+          $filesystem->chmod($item, octdec($perms));
           if ($realpath) {
             $processed_realpaths[$realpath] = TRUE;
           }
-          $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item), OutputInterface::VERBOSITY_VERBOSE);
-          continue;
+          if ($is_verbose) {
+            $output->writeln(sprintf("%s %s%s", $perms, $meta['icon'], $label));
+          }
         }
-        $filesystem->chmod($item, octdec($perms));
-        if ($realpath) {
-          $processed_realpaths[$realpath] = TRUE;
+        catch (\Throwable $exception) {
+          if ($realpath) {
+            $processed_realpaths[$realpath] = FALSE;
+          }
+          if ($progress_bar) {
+            $progress_bar->clear();
+          }
+          $output->writeln('<error>' . $perms . ' ' . $meta['icon'] . $label . '</error>');
+          $output->writeln('<error>' . $exception->getMessage() . '</error>');
+          if ($progress_bar) {
+            $progress_bar->display();
+          }
+          $failures[] = $exception->getMessage() . PHP_EOL;
         }
-        $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item));
       }
-      catch (\Throwable $exception) {
-        if ($realpath) {
-          $processed_realpaths[$realpath] = FALSE;
-        }
-        $output->writeln('<error>' . $perms . ' ' . $meta['icon'] . $get_label($item) . '</error>');
-        $output->writeln('<error>' . $exception->getMessage() . '</error>');
-        $failures[] = $exception->getMessage() . PHP_EOL;
+
+      if ($progress_bar) {
+        $progress_bar->finish();
+        $output->writeln('');
       }
-    }
 
-    if ($failures) {
-      $output->writeln(array_map(function ($line) {
-        return "<error>$line</error>";
-      }, $failures));
+      if ($failures) {
+        $output->writeln(array_map(function ($line) {
+          return "<error>$line</error>";
+        }, $failures));
 
-      return Command::FAILURE;
-    }
+        return Command::FAILURE;
+      }
 
-    $duration = microtime(TRUE) - $start_time;
+      $duration = microtime(TRUE) - $start_time;
 
-    $output->writeln(sprintf('<info>Completed in %.2f seconds.</info>', $duration));
-    $output->writeln('<info>Permission setting was successful.</info>');
+      $output->writeln(sprintf('<info>Completed in %.2f seconds.</info>', $duration));
+      $output->writeln('<info>Permission setting was successful.</info>');
 
-    return Command::SUCCESS;
-  })
-  ->run();
+      return Command::SUCCESS;
+    })
+    ->run();
