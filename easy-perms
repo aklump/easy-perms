@@ -8,7 +8,6 @@ use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Helpers\GetConcretePaths;
 use AKlump\EasyPerms\Helpers\GetLabel;
 use AKlump\EasyPerms\Helpers\HandleMemory;
-use AKlump\EasyPerms\Helpers\IsDir;
 use AKlump\EasyPerms\Helpers\SortPermissionTypes;
 use AKlump\EasyPerms\LoadConfig;
 use Symfony\Component\Console\Command\Command;
@@ -60,26 +59,30 @@ $version = Yaml::parseFile(__DIR__ . '/.web_package/config.yml')['version'];
 
     $failures = [];
     $perms_to_set = [];
-    $is_dir = new IsDir();
     $get_label = new GetLabel();
+    $filepath_cache = new Cache();
+    $get_concrete_paths = new GetConcretePaths($filepath_cache);
 
     foreach ($apply_order as $type) {
       $meta = $types[$type];
       if (empty($config[$type])) {
         continue;
       }
-      $filepath_cache = new Cache();
       foreach ($config[$type] as $path) {
         $output->writeln(sprintf('<info>Checking %s</info>', $get_label($path)));
-        $items = (new GetConcretePaths($filepath_cache))($path);
-        foreach ($items as $item) {
+        $items = $get_concrete_paths($path);
+        foreach ($items as $data) {
+          $item = $data['path'];
+          $is_item_dir = $data['is_dir'];
+          $current_perms = $data['perms'] ?? NULL;
           $perms_to_set[$item] = [$meta];
-          if ($is_dir($item)) {
+          if ($is_item_dir) {
             $perms_to_set[$item][] = (string) $config[ConfigInterface::DIRECTORY_PERMISSIONS][$type];
           }
           else {
             $perms_to_set[$item][] = (string) $config[ConfigInterface::FILE_PERMISSIONS][$type];
           }
+          $perms_to_set[$item][] = $current_perms;
         }
       }
     }
@@ -88,10 +91,12 @@ $version = Yaml::parseFile(__DIR__ . '/.web_package/config.yml')['version'];
 
     // Second, set the perms for all paths.
     foreach ($perms_to_set as $item => $data) {
-      list($meta, $perms) = $data;
+      list($meta, $perms, $current) = $data;
       try {
-        $current = fileperms($item);
-        $current = substr(decoct($current), -4);
+        if ($current === NULL) {
+          $p = @fileperms($item);
+          $current = $p !== FALSE ? substr(decoct($p), -4) : NULL;
+        }
         if ($current === $perms) {
           $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item), OutputInterface::VERBOSITY_VERBOSE);
           continue;
@@ -99,7 +104,7 @@ $version = Yaml::parseFile(__DIR__ . '/.web_package/config.yml')['version'];
         $filesystem->chmod($item, octdec($perms));
         $output->writeln($perms . ' ' . $meta['icon'] . $get_label($item));
       }
-      catch (IOException $exception) {
+      catch (\Throwable $exception) {
         $output->writeln('<error>' . $perms . ' ' . $meta['icon'] . $get_label($item) . '</error>');
         $output->writeln('<error>' . $exception->getMessage() . '</error>');
         $failures[] = $exception->getMessage() . PHP_EOL;

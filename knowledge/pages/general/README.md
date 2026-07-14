@@ -53,7 +53,7 @@ Checking bin/bind_book.sh
 Checking bin/easy-perms
 Checking bin/run_unit_tests.sh
 Checking vendor/bin/phpunit
-0770 🛠  app.php
+0770 🛠  easy-perms
 0770 🛠  bin/bind_book.sh
 0770 🛠  bin/run_unit_tests.sh
 0770 🛠  vendor/bin/phpunit
