@@ -27,7 +27,7 @@ class NormalizePath {
    *
    * @return string
    */
-  public function __invoke(string $path): string {
+  public function __invoke(string $path, bool $is_dir = NULL): string {
     $path = Path::normalize($path);
     if (!Path::isAbsolute($path)) {
       if (empty($this->getBasePath())) {
@@ -39,10 +39,11 @@ class NormalizePath {
       $path = Path::canonicalize($path);
     }
     $path = rtrim($path, '/');
-    if (file_exists($path)) {
-      if (is_dir($path)) {
-        $path .= '/';
-      }
+    if ($is_dir === NULL) {
+      $is_dir = is_dir($path);
+    }
+    if ($is_dir) {
+      $path .= '/';
     }
 
     return $path;

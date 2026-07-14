@@ -71,4 +71,8 @@ class Cache implements CacheInterface {
     return array_key_exists($key, $this->bucket);
   }
 
+  public function getKeys(): array {
+    return array_keys($this->bucket);
+  }
+
 }

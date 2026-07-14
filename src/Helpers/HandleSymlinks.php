@@ -2,7 +2,11 @@
 
 namespace AKlump\EasyPerms\Helpers;
 
+use Symfony\Component\Filesystem\Path;
+
 class HandleSymlinks {
+
+  private $normalizer;
 
   /**
    * @param string $path
@@ -13,14 +17,29 @@ class HandleSymlinks {
    *   it will only contain $path.
    */
   public function __invoke(string $path): array {
-    return $this->recursiveResolver($path);
+    $this->normalizer = $this->normalizer ?? new NormalizePath();
+    $files = [];
+    $this->resolver($path, $files);
+
+    return array_values($files);
   }
 
-  private function recursiveResolver($value, array &$files = []) {
-    $files[] = (new NormalizePath())($value);
-    if (is_link($value)) {
-      $target = dirname($value) . '/' . readlink($value);
-      $this->recursiveResolver($target, $files);
+  private function resolver($value, array &$files = []) {
+    $queue = [$value];
+    while (!empty($queue)) {
+      $val = array_shift($queue);
+      $normalized = ($this->normalizer)($val);
+      if (isset($files[$normalized])) {
+        continue;
+      }
+      $files[$normalized] = $normalized;
+      if (is_link($val)) {
+        $target = readlink($val);
+        if (!Path::isAbsolute($target)) {
+          $target = dirname($val) . '/' . $target;
+        }
+        $queue[] = $target;
+      }
     }
 
     return $files;

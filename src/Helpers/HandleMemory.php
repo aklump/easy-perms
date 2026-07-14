@@ -3,7 +3,7 @@
 namespace AKlump\EasyPerms\Helpers;
 
 class HandleMemory {
-  const MINIMUM = '384M';
+  const MINIMUM = '512M';
 
   public function __invoke(): void {
     if ($this->getCurrentLimit() < self::MINIMUM) {

@@ -1,7 +1,6 @@
 ## Critical
 
 - symlinks and targets should be handled as a single one, not requiring separate config entries, either target or symlink must expand to all paths and apply perms.
-- why is it so darn slow on my local machine compared to the remote server? Is it Lando?
 
 ## Normal
 

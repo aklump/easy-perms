@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \AKlump\EasyPerms\Helpers\GetFileList
+ * @uses \AKlump\EasyPerms\Helpers\NormalizePath
+ * @uses \AKlump\EasyPerms\Traits\HasBasePathTrait
  */
 class GetFileListTest extends TestCase {
 

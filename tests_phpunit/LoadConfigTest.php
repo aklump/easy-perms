@@ -11,6 +11,8 @@ use Symfony\Component\Yaml\Exception\ParseException;
 
 /**
  * @covers \AKlump\EasyPerms\LoadConfig
+ * @uses \AKlump\EasyPerms\Config\DefaultDirectoryPermissions
+ * @uses \AKlump\EasyPerms\Config\DefaultFilePermissions
  */
 class LoadConfigTest extends TestCase {
 

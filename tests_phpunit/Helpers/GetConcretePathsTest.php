@@ -8,6 +8,10 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \AKlump\EasyPerms\Helpers\GetConcretePaths
+ * @uses \AKlump\EasyPerms\Helpers\GetFileList
+ * @uses \AKlump\EasyPerms\Helpers\HandleSymlinks
+ * @uses \AKlump\EasyPerms\Helpers\NormalizePath
+ * @uses \AKlump\EasyPerms\Traits\HasBasePathTrait
  */
 class GetConcretePathsTest extends TestCase {
 
@@ -45,6 +49,7 @@ class GetConcretePathsTest extends TestCase {
       [
         'app/',
         'links/',
+        'links/symlink_l3',
         'lorem_dir/',
         'lorem_file',
         'lorem_symlink',
@@ -71,9 +76,11 @@ class GetConcretePathsTest extends TestCase {
     $tests[] = [
       'lorem*',
       [
+        'links/symlink_l3',
         'lorem_dir/',
         'lorem_file',
         'lorem_symlink',
+        'symlink_l2',
       ],
     ];
     $tests[] = [
@@ -93,8 +100,10 @@ class GetConcretePathsTest extends TestCase {
     $tests[] = [
       'lore?_symlink',
       [
+        'links/symlink_l3',
         'lorem_file',
         'lorem_symlink',
+        'symlink_l2',
       ],
     ];
     $tests[] = [

@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \AKlump\EasyPerms\Helpers\NormalizePath
+ * @uses \AKlump\EasyPerms\Traits\HasBasePathTrait
  */
 class NormalizePathTest extends TestCase {
 

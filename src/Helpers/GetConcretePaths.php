@@ -3,7 +3,6 @@
 namespace AKlump\EasyPerms\Helpers;
 
 use AKlump\EasyPerms\Traits\PathHandlerTrait;
-use AKlump\GitIgnore\Analyzer;
 use AKlump\GitIgnore\Pattern;
 use Psr\SimpleCache\CacheInterface;
 
@@ -44,9 +43,55 @@ class GetConcretePaths {
   public function __invoke(string $path): array {
     $return_only_directories = self::isDir($path);
     $symlink_handler = new HandleSymlinks();
+    $normalizer = new NormalizePath();
     if (file_exists($path)) {
-      $files = $symlink_handler($path);
-      $files = array_map(fn($path) => (new NormalizePath())($path), $files);
+      $files_data = $symlink_handler($path);
+      $files_data = array_map(function ($p) use ($normalizer) {
+        $is_dir = is_dir($p);
+
+        return [
+          'path' => $normalizer($p, $is_dir),
+          'is_dir' => $is_dir,
+          'is_link' => is_link($p),
+          'perms' => (function ($path) {
+            try {
+              $p = @fileperms($path);
+
+              return $p !== FALSE ? substr(decoct($p), -4) : NULL;
+            }
+            catch (\Throwable $e) {
+              return NULL;
+            }
+          })($p),
+          'realpath' => realpath($p),
+        ];
+      }, $files_data);
+
+      if ($this->cache) {
+        $matched_realpaths = [];
+        foreach ($files_data as $data) {
+          if (!empty($data['realpath'])) {
+            $matched_realpaths[$data['realpath']] = TRUE;
+          }
+        }
+        if (!empty($matched_realpaths)) {
+          $deduped = [];
+          foreach ($files_data as $data) {
+            $deduped[$data['path']] = $data;
+          }
+          if (method_exists($this->cache, 'getKeys')) {
+            foreach ($this->cache->getKeys() as $cached_dir) {
+              $all_files = $this->cache->get($cached_dir);
+              foreach ($all_files as $data) {
+                if (!empty($data['realpath']) && isset($matched_realpaths[$data['realpath']])) {
+                  $deduped[$data['path']] = $data;
+                }
+              }
+            }
+          }
+          $files_data = array_values($deduped);
+        }
+      }
     }
     else {
       do {
@@ -59,52 +104,110 @@ class GetConcretePaths {
       } while ($start_dir && !is_dir("$start_dir"));
 
       $matcher = new Pattern($path);
-      $files = $this->getFileList($start_dir);
-      $files = array_filter($files, function ($file) use ($matcher) {
-        return $file && $matcher->matches($file);
-      });
-      $files = array_values($files);
+      $all_files = $this->getFileList($start_dir);
+      $files_data = [];
+      $matched_realpaths = [];
+      foreach ($all_files as $data) {
+        $item_path = $data['path'];
+        if ($item_path && $matcher->matches($item_path)) {
+          $files_data[$item_path] = $data;
+          if (!empty($data['realpath'])) {
+            $matched_realpaths[$data['realpath']] = TRUE;
+          }
+        }
+      }
+
+      // Include all aliases (symlinks pointing to the same realpath)
+      foreach ($all_files as $data) {
+        if (!empty($data['realpath']) && isset($matched_realpaths[$data['realpath']])) {
+          $files_data[$data['path']] = $data;
+        }
+      }
+      $files_data = array_values($files_data);
 
       // Include any possible symlink targets in our file list.
-      $size = count($files);
       $resolved = [];
-      for ($i = 0; $i < $size; $i++) {
-        $path = $files[$i];
-        $symlink_resolution = $symlink_handler($path);
-        if (isset($symlink_resolution[1])) {
-          $resolved = array_merge($resolved, $symlink_resolution);
+      foreach ($files_data as $data) {
+        $path = is_array($data) ? $data['path'] : $data;
+        $resolved[$path] = $data;
+
+        $is_link = is_array($data) ? $data['is_link'] : is_link($path);
+        if ($is_link) {
+          $symlink_resolution = $symlink_handler($path);
+          foreach ($symlink_resolution as $resolved_path) {
+            if (!isset($resolved[$resolved_path])) {
+              $is_dir_res = is_dir($resolved_path);
+              $resolved[$resolved_path] = [
+                'path' => $normalizer($resolved_path, $is_dir_res),
+                'is_dir' => $is_dir_res,
+                'is_link' => is_link($resolved_path),
+                'perms' => (function ($path) {
+                  try {
+                    $p = @fileperms($path);
+
+                    return $p !== FALSE ? substr(decoct($p), -4) : NULL;
+                  }
+                  catch (\Throwable $e) {
+                    return NULL;
+                  }
+                })($resolved_path),
+                'realpath' => realpath($resolved_path),
+              ];
+            }
+          }
         }
-        else {
-          $resolved[] = $path;
-        }
       }
-      if (count($files) !== count($resolved)) {
-        $files = array_unique($resolved);
-      }
-      else {
-        $files = $resolved;
-      }
+      $files_data = array_values($resolved);
     }
 
-    sort($files);
     if ($return_only_directories) {
-      $files = array_filter($files, fn($file) => self::isDir($file));
+      $directories = [];
+      foreach ($files_data as $data) {
+        $is_item_dir = is_array($data) ? $data['is_dir'] : self::isDir($data);
+        if ($is_item_dir) {
+          $directories[] = $data;
+        }
+      }
+      $files_data = $directories;
     }
 
-    return $files;
+    usort($files_data, function ($a, $b) {
+      $a_path = is_array($a) ? $a['path'] : $a;
+      $b_path = is_array($b) ? $b['path'] : $b;
+
+      return strcmp($a_path, $b_path);
+    });
+
+    return $files_data;
   }
 
   private function getFileList(string $start_dir): array {
+    $normalizer = new NormalizePath();
+    $start_dir = $normalizer($start_dir, TRUE);
     if (NULL !== $this->cache) {
       if ($this->cache->has($start_dir)) {
-        $files = $this->cache->get($start_dir);
+        return $this->cache->get($start_dir);
+      }
+      if (method_exists($this->cache, 'getKeys')) {
+        foreach ($this->cache->getKeys() as $cached_dir) {
+          if (strpos($start_dir, $cached_dir) === 0) {
+            $all_files = $this->cache->get($cached_dir);
+            $files = [];
+            foreach ($all_files as $data) {
+              $path = is_array($data) ? $data['path'] : $data;
+              if (strpos($path, $start_dir) === 0) {
+                $files[] = $data;
+              }
+            }
+
+            return $files;
+          }
+        }
       }
     }
-    if (!isset($files)) {
-      $files = (new GetFileList())($start_dir);
-      if (NULL !== $this->cache) {
-        $this->cache->set($start_dir, $files);
-      }
+    $files = (new GetFileList())($start_dir);
+    if (NULL !== $this->cache) {
+      $this->cache->set($start_dir, $files);
     }
 
     return $files;
