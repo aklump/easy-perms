@@ -11,7 +11,7 @@ s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd 
 main_config="$__DIR__/config/easy-perms.yml"
 dev_config="$__DIR__/config/easy-perms.dev.yml"
 
-is_prod() {
+function is_prod() {
   # Modify this to return 0 when called from the production environment.
   [[ "${USER:-$(id -un)}" == "foobar" ]]
 }

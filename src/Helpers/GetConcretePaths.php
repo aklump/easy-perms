@@ -41,6 +41,9 @@ class GetConcretePaths {
    * @throws
    */
   public function __invoke(string $path): array {
+    if (empty($path)) {
+      return [];
+    }
     $return_only_directories = self::isDir($path);
     $symlink_handler = new HandleSymlinks();
     $normalizer = new NormalizePath();
@@ -94,14 +97,18 @@ class GetConcretePaths {
       }
     }
     else {
-      do {
-        if (empty($start_dir)) {
-          $start_dir = $path;
+      $start_dir = $path;
+      while ($start_dir && !is_dir($start_dir)) {
+        $prev_dir = $start_dir;
+        $start_dir = dirname($start_dir);
+        if ($start_dir === $prev_dir) {
+          $start_dir = '.';
+          break;
         }
-        else {
-          $start_dir = substr($start_dir, 0, -1);
-        }
-      } while ($start_dir && !is_dir("$start_dir"));
+      }
+      if (!$start_dir || !is_dir($start_dir)) {
+        $start_dir = '.';
+      }
 
       $matcher = new Pattern($path);
       $all_files = $this->getFileList($start_dir);

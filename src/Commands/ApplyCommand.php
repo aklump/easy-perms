@@ -3,16 +3,17 @@
 namespace AKlump\EasyPerms\Commands;
 
 use AKlump\EasyPerms\Cache;
+use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Config\DefaultDirectoryPermissions;
 use AKlump\EasyPerms\Config\DefaultFilePermissions;
-use AKlump\EasyPerms\Config\ConfigInterface;
-use AKlump\EasyPerms\Helpers\GetShortPath;
-use AKlump\EasyPerms\Traits\ConfigInitializerTrait;
+use AKlump\EasyPerms\Config\LoadConfig;
+use AKlump\EasyPerms\Environment\CheckEnvironment;
 use AKlump\EasyPerms\Helpers\GetConcretePaths;
 use AKlump\EasyPerms\Helpers\GetLabel;
+use AKlump\EasyPerms\Helpers\GetShortPath;
 use AKlump\EasyPerms\Helpers\HandleMemory;
 use AKlump\EasyPerms\Helpers\SortPermissionTypes;
-use AKlump\EasyPerms\LoadConfig;
+use AKlump\EasyPerms\Traits\ConfigInitializerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,6 +29,16 @@ class ApplyCommand extends Command {
 
   protected static $defaultName = 'apply';
 
+  /**
+   * @var \AKlump\EasyPerms\Environment\CheckEnvironment
+   */
+  protected CheckEnvironment $checkEnvironment;
+
+  public function __construct(CheckEnvironment $check_environment, ?string $name = NULL) {
+    $this->checkEnvironment = $check_environment;
+    parent::__construct($name);
+  }
+
   protected function configure() {
     $this
       ->setDescription('Apply permissions to files and directories based on configuration.')
@@ -35,6 +46,9 @@ class ApplyCommand extends Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
+    if (!$this->checkEnvironment->isReady($input, $output, $this->getHelperSet())) {
+      return Command::FAILURE;
+    }
     (new HandleMemory())();
     $get_short_path = new GetShortPath();
     $start_time = microtime(TRUE);
@@ -53,7 +67,7 @@ class ApplyCommand extends Command {
             return Command::FAILURE;
           }
         }
-        else {
+        if (!$filesystem->exists($path)) {
           $output->writeln(sprintf('<error>Configuration file "%s" does not exist.</error>', $short_path));
 
           return Command::FAILURE;
