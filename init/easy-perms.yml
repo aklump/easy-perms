@@ -9,11 +9,7 @@ directory_permissions:
   writeable: 0777
   executable: 0755
 default:
-#  - ../../**
-readonly:
-# - ../../web/default/settings*.php
-writeable:
-# - ../../private/default/files/*
-# - ../../web/sites/default/files/*
-executable:
-# - ../../vendor/bin/*
+  - ../../**
+readonly: [ ]
+writeable: [ ]
+executable: [ ]
