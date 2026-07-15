@@ -6,7 +6,7 @@ Add this to a project to be able to easily manage file and directory permissions
 
 The files in a web app are likely to require writeable and/or executable permissions on some files, but not most. Further, these permissions may need to be more permissive in development environments. It's time-consuming and may be confusing to keep all this in order. This tool allows you to set a baseline and then be only as permissive as necessary. It allows different configuration based on an environment. The management is simply to add paths or globs to a YAML or JSON file and then run the controller.
 
-**This project does not handle ownership of files, by design.**  It assumes proper owner and group on all files, and merely sets the octal permissions.
+**This project does not handle ownership of files, by design.**  It assumes proper owner and group on all files, and then focuses on setting the correct read, write and execute permissions.
 
 **For security, install this above web root, and not in a location accessibly by the web.**
 
@@ -33,33 +33,10 @@ The files in a web app are likely to require writeable and/or executable permiss
 
 ## Configuration
 
-```shell
-touch./bin/perms
-chmod u+x ./bin/perms
-mkdir -p ./bin/config
-touch ./bin/config/perms.yml
-```
+1. Use `vendor/bin/easy-perms init` to initialize your project. It will give you the option of copying boilerplate configuration files.
+2. You may pass multiple configuration files to `vendor/bin/easy-perms apply easy-perms.yml easy-perms.dev.yml`, so having a dedicated development environment config is a possible strategy. Then in the production environment you omit the development config like this: `vendor/bin/easy-perms apply easy-perms.yml`
 
-**File:** `controller.sh`
-
-```bash
-#!/usr/bin/env bash
-
-# @file
-# Place this in ./bin/perms to create a configured controller for aklump/easy-perms
-
-s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P
-"$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] &&
-s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
-
-base="$__DIR__/../"
-[[ -d "$base/.easy-perms" ]] && base="$base/.easy-perms"
-base="$(cd "$base" && pwd)"
-
-chmod u+x "$base/vendor/bin/easy-perms"
-"$base/vendor/bin/easy-perms" apply "$__DIR__/config/easy-perms.yml" "$@"
-```
-**File:** `perms.yml`
+**File:** `easy-perms.yml`
 
 ```yaml
 file_permissions:
@@ -73,19 +50,22 @@ directory_permissions:
   writeable: 0777
   executable: 0755
 default:
-#  - ../../**
-readonly:
-# - ../../web/default/settings*.php
-writeable:
-# - ../../private/default/files/*
-# - ../../web/sites/default/files/*
+  - ../../**
+readonly: [ ]
+writeable: [ ]
+executable: [ ]
+```
+**File:** `easy-perms.dev.yml`
+
+```yaml
 executable:
-# - ../../vendor/bin/*
+  - ../../**/node_modules/.bin/*
+  - ../../**/vendor/bin/*
+  - ../../node_modules/.bin/*
+  - ../../vendor/bin/*
 ```
 
-1. Copy the controller code to `./bin/perms`
-2. Copy the default configuration shown above to `./bin/config`.
-3. Make adjustments as necessary.
+1. Make adjustments as necessary.
 4. Add paths and path globs to each of: `default, readonly, writeable, executable` as is appropriate to your project.
 
 ### Pattern Syntax
@@ -99,10 +79,71 @@ executable:
 
 ## Usage
 
+1. Use `vendor/bin/easy-perms apply bin/config/easy-perms.yml bin/config/easy-perms.dev.yml` to apply the permissions in a dev environment.
+2. Use `vendor/bin/easy-perms apply bin/config/easy-perms.yml` to apply the permissions in a production environment.
+3. Or use the controller `bin/apply-perms.sh` to make applying permissions easy.
+
+## Controller
+
+1. Once again use `vendor/bin/easy-perms init` to initialize your project. Skip the configuration step, but use the controller step to copy the file. _Note: the controller file is optional, and should be modified or discarded as you see fit._
+
+**File:** `apply-perms.sh`
+
+```bash
+#!/usr/bin/env bash
+
+# @file
+# Creates a configured controller for aklump/easy-perms.
+
+set -euo pipefail
+
+s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] && s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
+
+# ========= Configuration =========
+main_config="$__DIR__/config/easy-perms.yml"
+dev_config="$__DIR__/config/easy-perms.dev.yml"
+
+function is_prod() {
+  # Modify this to return 0 when called from the production environment.
+  [[ "${USER:-$(id -un)}" == "foobar" ]]
+}
+# ========= End configuration =========
+
+base="$__DIR__/../"
+
+if [[ -d "$base/.easy-perms" ]]; then
+  base="$base/.easy-perms"
+fi
+
+base="$(cd "$base" && pwd)"
+easy_perms="$base/vendor/bin/easy-perms"
+
+if [[ ! -f "$easy_perms" ]]; then
+  echo "Missing executable: $easy_perms" >&2
+  exit 1
+fi
+
+if [[ ! -x "$easy_perms" ]]; then
+  chmod u+x "$easy_perms"
+fi
+
+if [[ ! -f "$main_config" ]]; then
+  echo "Missing configuration file: $main_config" >&2
+  exit 1
+fi
+
+config_paths=("$main_config")
+if ! is_prod && [[ -f "$dev_config" ]]; then
+  config_paths+=("$dev_config")
+fi
+
+"$easy_perms" apply "${config_paths[@]}" "$@"
+```
+
 To apply the configured permission to your project at any time, execute the controller like this:
 
 ```shell
-$ bin/perms -v
+$ bin/apply-perms.sh -v
 Checking bin/bind_book.sh
 Checking bin/easy-perms
 Checking bin/run_unit_tests.sh

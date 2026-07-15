@@ -20,7 +20,7 @@ class GetShortPath {
   }
 
   public function __invoke(string $path): string {
-    if (!str_starts_with($path, $this->basepath)) {
+    if (strpos($path, $this->basepath) !== 0) {
       return $path;
     }
 

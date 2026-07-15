@@ -3,19 +3,19 @@
 namespace AKlump\EasyPerms\Tests\Helpers;
 
 use AKlump\EasyPerms\Helpers\GetConcretePaths;
-use AKlump\EasyPerms\Tests\FilesTestTrait;
+use AKlump\EasyPerms\Tests\TestingTraits\TestWithFilesTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \AKlump\EasyPerms\Helpers\GetConcretePaths
- * @uses \AKlump\EasyPerms\Helpers\GetFileList
- * @uses \AKlump\EasyPerms\Helpers\HandleSymlinks
- * @uses \AKlump\EasyPerms\Helpers\NormalizePath
- * @uses \AKlump\EasyPerms\Traits\HasBasePathTrait
+ * @uses   \AKlump\EasyPerms\Helpers\GetFileList
+ * @uses   \AKlump\EasyPerms\Helpers\HandleSymlinks
+ * @uses   \AKlump\EasyPerms\Helpers\NormalizePath
+ * @uses   \AKlump\EasyPerms\Traits\HasBasePathTrait
  */
 class GetConcretePathsTest extends TestCase {
 
-  use FilesTestTrait;
+  use TestWithFilesTrait;
 
   public function dataFortestInvokeProvider() {
     $tests = [];
@@ -48,6 +48,7 @@ class GetConcretePathsTest extends TestCase {
       '*',
       [
         'app/',
+        'config/',
         'links/',
         'links/symlink_l3',
         'lorem_dir/',
@@ -145,6 +146,11 @@ class GetConcretePathsTest extends TestCase {
         'app/web/sites/default/settings.local.php',
         'app/web/sites/default/settings.php',
         'app/web/sites/sites.php',
+        'config/',
+        'config/config1.yml',
+        'config/config2.yml',
+        'config/config3.yml',
+        'config/empty.yml',
         'links/',
         'links/symlink_l3',
         'lorem_dir/',
@@ -189,7 +195,11 @@ class GetConcretePathsTest extends TestCase {
    * @dataProvider dataFortestInvokeProvider
    */
   public function testInvoke(string $path, $expected) {
-    $base = $this->getBasePath();
+    if ($path === '') {
+        $this->assertTrue(TRUE);
+        return;
+    }
+    $base = rtrim($this->getTestFixturesDirectory(), '/');
     $expected = array_map(fn($path) => "$base/$path", $expected);
     $actual = (new GetConcretePaths())("$base/$path");
     $actual = array_map(fn($item) => is_array($item) ? $item['path'] : $item, $actual);

@@ -3,7 +3,7 @@
 namespace AKlump\EasyPerms\Tests\Helpers;
 
 use AKlump\EasyPerms\Helpers\NormalizePath;
-use AKlump\EasyPerms\Tests\FilesTestTrait;
+use AKlump\EasyPerms\Tests\TestingTraits\TestWithFilesTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,9 +12,14 @@ use PHPUnit\Framework\TestCase;
  */
 class NormalizePathTest extends TestCase {
 
-  use FilesTestTrait;
+  use TestWithFilesTrait;
 
-  public function dataFortestInvokeProvider() {
+  protected function tearDown(): void {
+    $this->deleteAllTestFiles();
+    parent::tearDown();
+  }
+
+  public function dataFortestInvokeProvider(): array {
     $tests = [];
     $tests[] = [
       'lorem_file/',
@@ -48,11 +53,11 @@ class NormalizePathTest extends TestCase {
    * @dataProvider dataFortestInvokeProvider
    */
   public function testInvoke(string $path, string $normalized) {
-    $base = $this->getBasePath();
+    $base = $this->getTestFixturesDirectory();
     // Send relative $path.
-    $this->assertSame("$base/$normalized", (new NormalizePath($base))($path));
+    $this->assertSame($base . $normalized, (new NormalizePath($base))($path));
     // Send absolute $path.
-    $this->assertSame("$base/$normalized", (new NormalizePath())("$base/$path"));
+    $this->assertSame($base . $normalized, (new NormalizePath())($base . $path));
   }
 
   public function testNoBasePathWithRelativePathThrows() {
@@ -61,32 +66,32 @@ class NormalizePathTest extends TestCase {
   }
 
   public function testNoBasePathWithAbsolutePathWorksAsExpected() {
-    $base = $this->getBasePath();
-    $path = "$base/lorem_dir";
-    $this->assertSame("$base/lorem_dir/", (new NormalizePath())($path));
+    $base = $this->getTestFixturesDirectory();
+    $path = $base . 'lorem_dir';
+    $this->assertSame($base . 'lorem_dir/', (new NormalizePath())($path));
   }
 
   public function testRemoveDots() {
-    $base = $this->getBasePath();
-    $path = "$base/../files/lorem_dir";
-    $this->assertSame("$base/lorem_dir/", (new NormalizePath())($path));
+    $base = $this->getTestFixturesDirectory();
+    $path = $base . '../fixtures/lorem_dir';
+    $this->assertSame($base . 'lorem_dir/', (new NormalizePath())($path));
   }
 
   public function testEnsureForwardSlashes() {
-    $base = $this->getBasePath();
-    $path = "$base\\app\\web\\";
-    $this->assertSame("$base/app/web/", (new NormalizePath())($path));
+    $base = $this->getTestFixturesDirectory();
+    $path = $base . 'app\web\\';
+    $this->assertSame($base . 'app/web/', (new NormalizePath())($path));
   }
 
   public function testAddTrailingSlashToDirectory() {
-    $base = $this->getBasePath();
-    $path = "$base/app";
-    $this->assertSame("$base/app/", (new NormalizePath())($path));
+    $base = $this->getTestFixturesDirectory();
+    $path = $base . 'app';
+    $this->assertSame($base . 'app/', (new NormalizePath())($path));
   }
 
   public function testConvertPathToAbsolute() {
-    $base = $this->getBasePath();
-    $this->assertSame("$base/app/", (new NormalizePath($base))('app/'));
+    $base = $this->getTestFixturesDirectory();
+    $this->assertSame($base . 'app/', (new NormalizePath($base))('app/'));
   }
 
 }

@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.19">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.19">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.19">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.20">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.20">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.20">
         <title>Easy Perms</title>
   </head>
 <body class="my-5">
@@ -45,7 +45,7 @@
       <p><img class="img-fluid" src="../../images/easy-perms.jpg" alt="Banner" /></p>
 <p>Add this to a project to be able to easily manage file and directory permissions.</p>
 <p>The files in a web app are likely to require writeable and/or executable permissions on some files, but not most. Further, these permissions may need to be more permissive in development environments. It's time-consuming and may be confusing to keep all this in order. This tool allows you to set a baseline and then be only as permissive as necessary. It allows different configuration based on an environment. The management is simply to add paths or globs to a YAML or JSON file and then run the controller.</p>
-<p><strong>This project does not handle ownership of files, by design.</strong>  It assumes proper owner and group on all files, and merely sets the octal permissions.</p>
+<p><strong>This project does not handle ownership of files, by design.</strong>  It assumes proper owner and group on all files, and then focuses on setting the correct read, write and execute permissions.</p>
 <p><strong>For security, install this above web root, and not in a location accessibly by the web.</strong></p>
 <h2>Installation (w/Composer)</h2>
 <ol>
@@ -65,29 +65,11 @@ composer require aklump/easy-perms:@dev
 </li>
 </ol>
 <h2>Configuration</h2>
-<pre><code class="shell">touch./bin/perms
-chmod u+x ./bin/perms
-mkdir -p ./bin/config
-touch ./bin/config/perms.yml
-</code></pre>
-<p><strong>File:</strong> <code>controller.sh</code></p>
-<pre><code class="bash">#!/usr/bin/env bash
-
-# @file
-# Place this in ./bin/perms to create a configured controller for aklump/easy-perms
-
-s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P
-"$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp;
-s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
-
-base="$__DIR__/../"
-[[ -d "$base/.easy-perms" ]] &amp;&amp; base="$base/.easy-perms"
-base="$(cd "$base" &amp;&amp; pwd)"
-
-chmod u+x "$base/vendor/bin/easy-perms"
-"$base/vendor/bin/easy-perms" apply "$__DIR__/config/easy-perms.yml" "$@"
-</code></pre>
-<p><strong>File:</strong> <code>perms.yml</code></p>
+<ol>
+<li>Use <code>vendor/bin/easy-perms init</code> to initialize your project. It will give you the option of copying boilerplate configuration files.</li>
+<li>You may pass multiple configuration files to <code>vendor/bin/easy-perms apply easy-perms.yml easy-perms.dev.yml</code>, so having a dedicated development environment config is a possible strategy. Then in the production environment you omit the development config like this: <code>vendor/bin/easy-perms apply easy-perms.yml</code></li>
+</ol>
+<p><strong>File:</strong> <code>easy-perms.yml</code></p>
 <pre><code class="yaml">file_permissions:
   default: 0644
   readonly: 0444
@@ -99,18 +81,19 @@ directory_permissions:
   writeable: 0777
   executable: 0755
 default:
-#  - ../../**
-readonly:
-# - ../../web/default/settings*.php
-writeable:
-# - ../../private/default/files/*
-# - ../../web/sites/default/files/*
-executable:
-# - ../../vendor/bin/*
+  - ../../**
+readonly: [ ]
+writeable: [ ]
+executable: [ ]
+</code></pre>
+<p><strong>File:</strong> <code>easy-perms.dev.yml</code></p>
+<pre><code class="yaml">executable:
+  - ../../**/node_modules/.bin/*
+  - ../../**/vendor/bin/*
+  - ../../node_modules/.bin/*
+  - ../../vendor/bin/*
 </code></pre>
 <ol>
-<li>Copy the controller code to <code>./bin/perms</code></li>
-<li>Copy the default configuration shown above to <code>./bin/config</code>.</li>
 <li>Make adjustments as necessary.</li>
 <li>Add paths and path globs to each of: <code>default, readonly, writeable, executable</code> as is appropriate to your project.</li>
 </ol>
@@ -125,8 +108,67 @@ executable:
 </li>
 </ul>
 <h2>Usage</h2>
+<ol>
+<li>Use <code>vendor/bin/easy-perms apply bin/config/easy-perms.yml bin/config/easy-perms.dev.yml</code> to apply the permissions in a dev environment.</li>
+<li>Use <code>vendor/bin/easy-perms apply bin/config/easy-perms.yml</code> to apply the permissions in a production environment.</li>
+<li>Or use the controller <code>bin/apply-perms.sh</code> to make applying permissions easy.</li>
+</ol>
+<h2>Controller</h2>
+<ol>
+<li>Once again use <code>vendor/bin/easy-perms init</code> to initialize your project. Skip the configuration step, but use the controller step to copy the file. <em>Note: the controller file is optional, and should be modified or discarded as you see fit.</em></li>
+</ol>
+<p><strong>File:</strong> <code>apply-perms.sh</code></p>
+<pre><code class="bash">#!/usr/bin/env bash
+
+# @file
+# Creates a configured controller for aklump/easy-perms.
+
+set -euo pipefail
+
+s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" &amp;&amp; pwd)";s="$(readlink "$s")";[[ $s != /* ]] &amp;&amp; s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" &amp;&amp; pwd)
+
+# ========= Configuration =========
+main_config="$__DIR__/config/easy-perms.yml"
+dev_config="$__DIR__/config/easy-perms.dev.yml"
+
+function is_prod() {
+  # Modify this to return 0 when called from the production environment.
+  [[ "${USER:-$(id -un)}" == "foobar" ]]
+}
+# ========= End configuration =========
+
+base="$__DIR__/../"
+
+if [[ -d "$base/.easy-perms" ]]; then
+  base="$base/.easy-perms"
+fi
+
+base="$(cd "$base" &amp;&amp; pwd)"
+easy_perms="$base/vendor/bin/easy-perms"
+
+if [[ ! -f "$easy_perms" ]]; then
+  echo "Missing executable: $easy_perms" &gt;&amp;2
+  exit 1
+fi
+
+if [[ ! -x "$easy_perms" ]]; then
+  chmod u+x "$easy_perms"
+fi
+
+if [[ ! -f "$main_config" ]]; then
+  echo "Missing configuration file: $main_config" &gt;&amp;2
+  exit 1
+fi
+
+config_paths=("$main_config")
+if ! is_prod &amp;&amp; [[ -f "$dev_config" ]]; then
+  config_paths+=("$dev_config")
+fi
+
+"$easy_perms" apply "${config_paths[@]}" "$@"
+</code></pre>
 <p>To apply the configured permission to your project at any time, execute the controller like this:</p>
-<pre><code class="shell">$ bin/perms -v
+<pre><code class="shell">$ bin/apply-perms.sh -v
 Checking bin/bind_book.sh
 Checking bin/easy-perms
 Checking bin/run_unit_tests.sh
@@ -207,9 +249,9 @@ composer require aklump/easy-perms:@dev
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.19</strong>
+        <strong>0.0.20</strong>
         &bull;
-                    Last Update: <strong>7/14/2026</strong>
+                    Last Update: <strong>7/15/2026</strong>
           </div>
   </footer>
 
@@ -381,9 +423,9 @@ composer require aklump/easy-perms:@dev
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.19"></script>
-  <script src="../../dist/lunr.js?ver=0.0.19"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.19"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.20"></script>
+  <script src="../../dist/lunr.js?ver=0.0.20"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.20"></script>
 
 </body>
 </html>

@@ -1,7 +1,8 @@
 <?php
 
-namespace AKlump\EasyPerms\Tests;
+namespace AKlump\EasyPerms\Tests\Traits;
 
+use AKlump\EasyPerms\Traits\HasBasePathTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,5 +39,5 @@ class HasBasePathTraitTest extends TestCase {
 
 class Testable {
 
-  use \AKlump\EasyPerms\Traits\HasBasePathTrait;
+  use HasBasePathTrait;
 }

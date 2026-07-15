@@ -1,3 +1,3 @@
 #!/bin/zsh
 
-bin/perms.sh
+bin/apply-perms.sh

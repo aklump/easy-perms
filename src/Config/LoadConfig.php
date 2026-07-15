@@ -1,11 +1,9 @@
 <?php
 
-namespace AKlump\EasyPerms;
+namespace AKlump\EasyPerms\Config;
 
-use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
-use AKlump\EasyPerms\Config\ConfigInterface;
 
 class LoadConfig {
 

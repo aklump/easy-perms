@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # @file
-# Place this in ./bin/perms to create a configured controller for aklump/easy-perms.
+# Creates a configured controller for aklump/easy-perms.
 
 set -euo pipefail
 
@@ -24,7 +24,7 @@ if [[ -d "$base/.easy-perms" ]]; then
 fi
 
 base="$(cd "$base" && pwd)"
-easy_perms="$base/vendor/bin/easy-perms"
+easy_perms="$base/easy-perms"
 
 if [[ ! -f "$easy_perms" ]]; then
   echo "Missing executable: $easy_perms" >&2

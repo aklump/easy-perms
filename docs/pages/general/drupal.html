@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.19">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.19">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.19">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.20">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.20">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.20">
         <title>Drupal-Specific Configuration | Easy Perms</title>
   </head>
 <body class="my-5">
@@ -45,21 +45,7 @@
       <ul>
 <li><a href="https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-file-permissions-and-ownership">Drupal Best Practices</a></li>
 </ul>
-<p><strong>File:</strong> <code>drupal.yml</code></p>
-<pre><code class="yaml"># https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-file-permissions-and-ownership#special-considerations-for-settings-php
-default:
-  - ../../**
-readonly:
-  - .env
-  - ../../sites/*/
-  - ../../sites/*/settings*
-writeable:
-  - ../../private/*/files/
-  - ../../private/*/files/**
-  - ../../web/sites/*/files
-  - ../../web/sites/*/files/**
-executable:
-</code></pre>
+<p>{{ snippet.drupal_yml|fenced }}</p>
     </article>
   </div>
 </main>
@@ -67,9 +53,9 @@ executable:
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.19</strong>
+        <strong>0.0.20</strong>
         &bull;
-                    Last Update: <strong>7/14/2026</strong>
+                    Last Update: <strong>7/15/2026</strong>
           </div>
   </footer>
 
@@ -242,9 +228,9 @@ executable:
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.19"></script>
-  <script src="../../dist/lunr.js?ver=0.0.19"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.19"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.20"></script>
+  <script src="../../dist/lunr.js?ver=0.0.20"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.20"></script>
 
 </body>
 </html>

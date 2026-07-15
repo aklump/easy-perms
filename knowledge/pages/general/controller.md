@@ -12,8 +12,8 @@ tags: ''
    ```shell
    j a
    mkdir -p bin/config
-   touch bin/perms
-   chmod u+x bin/perms
+   touch bin/apply-perms.sh
+   chmod u+x bin/apply-perms.sh
    ```
 3. Paste the controller code (see installation pages) into _bin/perms_:
 5. Open and edit _bin/config/perms.yml_ as necessary. (See how to create on the installation pages).
