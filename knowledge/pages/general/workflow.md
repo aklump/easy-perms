@@ -32,14 +32,14 @@ chmod u+x ...vendor/bin/easy-perms
 
 ## Install/Deployment
 
-1. During deployment to live use `./bin/perms` to ensure the live perms are set correctly.
+1. During deployment to live use `./bin/apply-perms.sh` to ensure the live perms are set correctly.
 4. Better yet, do the last step as part of `./bin/install` by setting something like this:
 
 ```yaml
   pre_install_prod:
     - cd opt/aklump/easy-config && composer install
   post_install_prod:
-    - bin/perms
+    - bin/apply-perms.sh
 ```
 
 _bin/perms_

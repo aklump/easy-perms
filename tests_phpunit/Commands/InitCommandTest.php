@@ -24,16 +24,18 @@ class InitCommandTest extends TestCase {
       unlink($dest_file);
     }
 
-    // Mock inputs: y (copy), config_test_init.yml (dest), 0 (drupal.yml), n (no controller)
-    $commandTester->setInputs(['y', 'config_test_init.yml', '0', 'n']);
+    // Mock inputs: y (copy), config_test_init_dir (dest dir), 1 (drupal.yml), exit (3) (to stop loop), n (no controller)
+    $commandTester->setInputs(['y', 'config_test_init_dir', '1', 'exit', 'n']);
     $commandTester->execute([]);
 
     $output = $commandTester->getDisplay();
     $this->assertStringContainsString('Configuration copied to', $output);
+    $dest_file = getcwd() . '/config_test_init_dir/easy-perms.drupal.yml';
     $this->assertFileExists($dest_file);
-    $this->assertFileEquals(dirname(__DIR__, 2) . '/init/drupal.yml', $dest_file);
+    $this->assertFileEquals(dirname(__DIR__, 2) . '/init/easy-perms.drupal.yml', $dest_file);
 
     unlink($dest_file);
+    rmdir(getcwd() . '/config_test_init_dir');
   }
 
   public function testExecuteCopiesController() {
@@ -60,24 +62,27 @@ class InitCommandTest extends TestCase {
     rmdir(getcwd() . '/bin_test');
   }
 
-  public function testExecuteAbortsIfFileExists() {
+  public function testExecuteSkipsIfFileExists() {
     $application = new Application();
     $application->add(new InitCommand());
 
     $command = $application->find('init');
     $commandTester = new CommandTester($command);
 
-    $dest_file = getcwd() . '/config_test_init_exists.yml';
+    $dest_dir = getcwd() . '/config_test_init_exists_dir';
+    mkdir($dest_dir);
+    $dest_file = $dest_dir . '/easy-perms.dev.yml';
     touch($dest_file);
 
-    // Mock inputs: y (copy), config_test_init_exists.yml (dest)
-    $commandTester->setInputs(['y', 'config_test_init_exists.yml']);
+    // Mock inputs: y (copy), config_test_init_exists_dir (dest), 0 (dev.yml), exit (to stop)
+    $commandTester->setInputs(['y', 'config_test_init_exists_dir', '0', 'exit', 'n']);
     $commandTester->execute([]);
 
     $output = $commandTester->getDisplay();
-    $this->assertStringContainsString('already exists. Aborting.', $output);
+    $this->assertStringContainsString('already exists. Skipping.', $output);
 
     unlink($dest_file);
+    rmdir($dest_dir);
   }
 
   public function testExecuteSkipsIfNoSelected() {
