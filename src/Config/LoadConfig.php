@@ -25,9 +25,18 @@ class LoadConfig {
    */
   public function __invoke(array $config_paths): array {
     $all_config = [];
+    foreach ($this->defaults as $type => $perms) {
+      $all_config[$type] = array_map(function ($value) {
+        if (is_int($value)) {
+          return '0' . decoct($value);
+        }
+
+        return $value;
+      }, $perms->jsonSerialize());
+    }
+
     foreach ($config_paths as $path) {
       $one_config = $this->loadFile($path);
-      $one_config = $this->ensureDefaults($one_config);
       $base_path = dirname($path);
       foreach ([
                  ConfigInterface::DEFAULT,
@@ -65,7 +74,7 @@ class LoadConfig {
       $result = $value;
     }
     else {
-      foreach (array_keys($value) as $k) {
+      foreach ($value as $k => $v) {
         if (!is_numeric($k)) {
 
           // These arrays get replaced, not merged.
@@ -73,11 +82,17 @@ class LoadConfig {
             ConfigInterface::FILE_PERMISSIONS,
             ConfigInterface::DIRECTORY_PERMISSIONS,
           ])) {
-            $result[$k] = $value[$k];
+            $result[$k] = array_map(function ($value) {
+              if (is_int($value)) {
+                return '0' . decoct($value);
+              }
+
+              return $value;
+            }, $v);
           }
           else {
             $result[$k] = $result[$k] ?? [];
-            $this->merge($value[$k], $result[$k]);
+            $this->merge($v, $result[$k]);
           }
         }
         else {
@@ -104,24 +119,5 @@ class LoadConfig {
     return $config;
   }
 
-  private function ensureDefaults(array $config): array {
-    foreach ($this->defaults as $type => $perms) {
-      if (empty($config[$type]) || !is_array($config[$type])) {
-        $config[$type] = [];
-      }
-      $config[$type] += $perms->jsonSerialize();
-
-      // Ensure we have octal strings as values.
-      $config[$type] = array_map(function ($value) {
-        if (is_int($value)) {
-          return '0' . decoct($value);
-        }
-
-        return $value;
-      }, $config[$type]);
-    }
-
-    return $config;
-  }
 
 }

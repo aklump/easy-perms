@@ -10,6 +10,6 @@ directory_permissions:
   executable: '0750'
 default:
   - '../../**'
-readonly: { }
-writeable: { }
-executable: { }
+readonly: []
+writeable: []
+executable: []

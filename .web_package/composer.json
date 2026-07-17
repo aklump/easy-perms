@@ -6,10 +6,11 @@
       "email": "sourcecode@intheloftstudios.com"
     }
   ],
+  "require": {},
   "autoload": {
     "psr-4": {
+      "AKlump\\WebPackage\\User\\": "src/",
       "AKlump\\EasyPerms\\": "../src/"
     }
-  },
-  "require": {}
+  }
 }

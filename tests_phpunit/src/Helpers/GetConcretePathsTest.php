@@ -49,6 +49,8 @@ class GetConcretePathsTest extends TestCase {
       [
         'app/',
         'config/',
+        'easy-perms.dev.yml',
+        'easy-perms.yml',
         'links/',
         'links/symlink_l3',
         'lorem_dir/',
@@ -151,6 +153,8 @@ class GetConcretePathsTest extends TestCase {
         'config/config2.yml',
         'config/config3.yml',
         'config/empty.yml',
+        'easy-perms.dev.yml',
+        'easy-perms.yml',
         'links/',
         'links/symlink_l3',
         'lorem_dir/',

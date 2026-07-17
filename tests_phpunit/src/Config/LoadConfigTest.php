@@ -147,4 +147,31 @@ class LoadConfigTest extends TestCase {
     (new LoadConfig($config_defaults))([$yaml_file]);
   }
 
+  public function testDevConfigOverridesBaseConfig() {
+    $config_defaults = [
+      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+      ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
+    ];
+    $base_config_file = $this->getTestFixturePath('easy-perms.yml');
+    $dev_config_file = $this->getTestFixturePath('easy-perms.dev.yml');
+
+    // Default for file_permissions.default in DefaultFilePermissions is 0640.
+    // Base config sets file_permissions.default to 0644
+    file_put_contents($base_config_file, "file_permissions:\n  default: '0644'");
+
+    // Dev config does NOT set file_permissions.default.
+    // It only sets some other value.
+    file_put_contents($dev_config_file, "readonly:\n  - foo.txt");
+
+    $config = (new LoadConfig($config_defaults))([
+      $base_config_file,
+      $dev_config_file,
+    ]);
+
+    // It should be 0644 because base set it.
+    // BUT if defaults (0640) are merged into dev_config_file (which doesn't have it),
+    // and THEN dev_config is merged into base_config, it might overwrite 0644 with 0640.
+    $this->assertSame('0644', $config[ConfigInterface::FILE_PERMISSIONS]['default']);
+  }
+
 }
