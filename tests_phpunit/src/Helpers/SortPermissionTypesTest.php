@@ -15,14 +15,14 @@ class SortPermissionTypesTest extends TestCase {
     $tests = [];
     $tests[] = [
       [
-        ConfigInterface::WRITEABLE,
+        ConfigInterface::WRITABLE,
         ConfigInterface::READONLY,
         ConfigInterface::DEFAULT,
         ConfigInterface::EXECUTABLE,
       ],
       [
         ConfigInterface::DEFAULT,
-        ConfigInterface::WRITEABLE,
+        ConfigInterface::WRITABLE,
         ConfigInterface::EXECUTABLE,
         ConfigInterface::READONLY,
       ],
@@ -30,13 +30,13 @@ class SortPermissionTypesTest extends TestCase {
     $tests[] = [
       [
         ConfigInterface::DEFAULT,
-        ConfigInterface::WRITEABLE,
+        ConfigInterface::WRITABLE,
         ConfigInterface::EXECUTABLE,
         ConfigInterface::READONLY,
       ],
       [
         ConfigInterface::DEFAULT,
-        ConfigInterface::WRITEABLE,
+        ConfigInterface::WRITABLE,
         ConfigInterface::EXECUTABLE,
         ConfigInterface::READONLY,
       ],

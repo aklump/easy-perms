@@ -1,15 +1,15 @@
 file_permissions:
   default: '0640'
   readonly: '0440'
-  writeable: '0660'
+  writable: '0660'
   executable: '0770'
 directory_permissions:
   default: '0750'
   readonly: '0550'
-  writeable: '0770'
+  writable: '0770'
   executable: '0750'
 default:
   - '../../**'
 readonly: []
-writeable: []
+writable: []
 executable: []

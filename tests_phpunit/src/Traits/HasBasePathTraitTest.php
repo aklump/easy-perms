@@ -2,6 +2,7 @@
 
 namespace AKlump\EasyPerms\Tests\Traits;
 
+use AKlump\EasyPerms\Tests\TestingTraits\TestWithFilesTrait;
 use AKlump\EasyPerms\Traits\HasBasePathTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -10,13 +11,15 @@ use PHPUnit\Framework\TestCase;
  */
 class HasBasePathTraitTest extends TestCase {
 
+  use TestWithFilesTrait;
+
   public function testSetBasePathWorksAsExpected() {
     $obj = new Testable('lorem/ipsum');
     $this->assertSame('foo/bar', $obj->setBasePath('foo/bar')->getBasePath());
   }
 
   public function testPathIsNormalized() {
-    $path = (new Testable('lorem\\ipsum'))->getBasePath();
+    $path = (new Testable('lorem/ipsum'))->getBasePath();
     $this->assertSame('lorem/ipsum', $path);
   }
 

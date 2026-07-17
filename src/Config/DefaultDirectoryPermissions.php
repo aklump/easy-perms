@@ -11,7 +11,7 @@ class DefaultDirectoryPermissions implements \JsonSerializable {
     return [
       'default' => '0750',
       'readonly' => '0550',
-      'writeable' => '0770',
+      'writable' => '0770',
       'executable' => '0750',
     ];
   }

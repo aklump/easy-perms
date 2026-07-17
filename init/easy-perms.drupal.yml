@@ -3,7 +3,7 @@ readonly:
   - ../../.env
   - ../../sites/*/
   - ../../sites/*/settings*
-writeable:
+writable:
   - ../../private/*/files/
   - ../../private/*/files/**
   - ../../web/sites/*/files

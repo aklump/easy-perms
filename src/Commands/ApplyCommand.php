@@ -83,7 +83,7 @@ class ApplyCommand extends Command {
     $types = [
       ConfigInterface::READONLY => ['icon' => '📘️ '],
       ConfigInterface::DEFAULT => ['icon' => '☀️  '],
-      ConfigInterface::WRITEABLE => ['icon' => '✏️  '],
+      ConfigInterface::WRITABLE => ['icon' => '✏️  '],
       ConfigInterface::EXECUTABLE => ['icon' => '🛠  '],
     ];
     $apply_order = (new SortPermissionTypes())(array_keys($types));

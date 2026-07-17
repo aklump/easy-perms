@@ -4,7 +4,7 @@
 
 Add this to a project to be able to easily manage file and directory permissions.
 
-The files in a web app are likely to require writeable and/or executable permissions on some files, but not most. Further, these permissions may need to be more permissive in development environments. It's time-consuming and may be confusing to keep all this in order. This tool allows you to set a baseline and then be only as permissive as necessary. It allows different configuration based on an environment. The management is simply to add paths or globs to a YAML or JSON file and then run the controller.
+The files in a web app are likely to require writable and/or executable permissions on some files, but not most. Further, these permissions may need to be more permissive in development environments. It's time-consuming and may be confusing to keep all this in order. This tool allows you to set a baseline and then be only as permissive as necessary. It allows different configuration based on an environment. The management is simply to add paths or globs to a YAML or JSON file and then run the controller.
 
 **This project does not handle ownership of files, by design.**  It assumes proper owner and group on all files, and then focuses on setting the correct read, write and execute permissions.
 
@@ -42,17 +42,17 @@ The files in a web app are likely to require writeable and/or executable permiss
 file_permissions:
   default: '0640'
   readonly: '0440'
-  writeable: '0660'
+  writable: '0660'
   executable: '0770'
 directory_permissions:
   default: '0750'
   readonly: '0550'
-  writeable: '0770'
+  writable: '0770'
   executable: '0750'
 default:
   - '../../**'
 readonly: []
-writeable: []
+writable: []
 executable: []
 ```
 **File:** `easy-perms.dev.yml`
@@ -67,7 +67,7 @@ executable:
 ```
 
 1. Make adjustments as necessary.
-4. Add paths and path globs to each of: `default, readonly, writeable, executable` as is appropriate to your project.
+4. Add paths and path globs to each of: `default, readonly, writable, executable` as is appropriate to your project.
 
 ### Pattern Syntax
 

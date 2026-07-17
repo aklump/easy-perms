@@ -26,13 +26,10 @@ class LoadConfig {
   public function __invoke(array $config_paths): array {
     $all_config = [];
     foreach ($this->defaults as $type => $perms) {
-      $all_config[$type] = array_map(function ($value) {
-        if (is_int($value)) {
-          return '0' . decoct($value);
-        }
-
-        return $value;
-      }, $perms->jsonSerialize());
+      $all_config[$type] = [];
+      foreach ($perms->jsonSerialize() as $key => $value) {
+        $all_config[$type][$key] = $this->normalizePermissionMode($value, $key);
+      }
     }
 
     foreach ($config_paths as $path) {
@@ -41,7 +38,7 @@ class LoadConfig {
       foreach ([
                  ConfigInterface::DEFAULT,
                  ConfigInterface::READONLY,
-                 ConfigInterface::WRITEABLE,
+                 ConfigInterface::WRITABLE,
                  ConfigInterface::EXECUTABLE,
                ] as $type) {
         if (isset($one_config[$type]) && is_array($one_config[$type])) {
@@ -75,6 +72,9 @@ class LoadConfig {
     }
     else {
       foreach ($value as $k => $v) {
+        if ($k === 'writeable') {
+          throw new \RuntimeException('The "writeable" key is deprecated and has been removed.  Please use "writable" instead.');
+        }
         if (!is_numeric($k)) {
 
           // These arrays get replaced, not merged.
@@ -82,13 +82,13 @@ class LoadConfig {
             ConfigInterface::FILE_PERMISSIONS,
             ConfigInterface::DIRECTORY_PERMISSIONS,
           ])) {
-            $result[$k] = array_map(function ($value) {
-              if (is_int($value)) {
-                return '0' . decoct($value);
+            $result[$k] = $result[$k] ?? [];
+            foreach ($v as $key => $value) {
+              if ($key === 'writeable') {
+                throw new \RuntimeException(sprintf('The "%s.writeable" key is deprecated and has been removed.  Please use "writable" instead.', $k));
               }
-
-              return $value;
-            }, $v);
+              $result[$k][$key] = $this->normalizePermissionMode($value, $k . '.' . $key);
+            }
           }
           else {
             $result[$k] = $result[$k] ?? [];
@@ -117,6 +117,17 @@ class LoadConfig {
     }
 
     return $config;
+  }
+
+  private function normalizePermissionMode($value, string $key): string {
+    if (is_int($value)) {
+      $value = '0' . decoct($value);
+    }
+    if (!is_string($value) || !preg_match('/^0[0-7]{3}$/', $value)) {
+      throw new \InvalidArgumentException(sprintf('Invalid permission mode "%s" for key "%s".  It must be a four-digit octal string starting with 0, e.g., "0644".', print_r($value, TRUE), $key));
+    }
+
+    return $value;
   }
 
 

@@ -62,7 +62,7 @@ class LoadConfigTest extends TestCase {
     $this->assertArrayHasKey(ConfigInterface::EXECUTABLE, $config);
     $this->assertArrayHasKey(ConfigInterface::FILE_PERMISSIONS, $config);
     $this->assertArrayHasKey(ConfigInterface::READONLY, $config);
-    $this->assertArrayHasKey(ConfigInterface::WRITEABLE, $config);
+    $this->assertArrayHasKey(ConfigInterface::WRITABLE, $config);
 
     $this->assertCount(1, $config[ConfigInterface::DEFAULT]);
     $this->assertCount(1, $config[ConfigInterface::EXECUTABLE]);
@@ -89,7 +89,7 @@ class LoadConfigTest extends TestCase {
     $this->assertArrayHasKey(ConfigInterface::EXECUTABLE, $config);
     $this->assertArrayHasKey(ConfigInterface::FILE_PERMISSIONS, $config);
     $this->assertArrayHasKey(ConfigInterface::READONLY, $config);
-    $this->assertArrayHasKey(ConfigInterface::WRITEABLE, $config);
+    $this->assertArrayHasKey(ConfigInterface::WRITABLE, $config);
 
     $this->assertCount(1, $config[ConfigInterface::DEFAULT]);
     $this->assertCount(2, $config[ConfigInterface::EXECUTABLE]);
@@ -113,7 +113,7 @@ class LoadConfigTest extends TestCase {
     $this->assertCount(4, $file_perms);
     $this->assertSame('0400', $file_perms[ConfigInterface::READONLY]);
     $this->assertSame('0700', $file_perms[ConfigInterface::EXECUTABLE]);
-    $this->assertSame('0600', $file_perms[ConfigInterface::WRITEABLE]);
+    $this->assertSame('0600', $file_perms[ConfigInterface::WRITABLE]);
     $this->assertSame('0500', $file_perms[ConfigInterface::DEFAULT]);
   }
 
@@ -171,6 +171,51 @@ class LoadConfigTest extends TestCase {
     // It should be 0644 because base set it.
     // BUT if defaults (0640) are merged into dev_config_file (which doesn't have it),
     // and THEN dev_config is merged into base_config, it might overwrite 0644 with 0640.
+    $this->assertSame('0644', $config[ConfigInterface::FILE_PERMISSIONS]['default']);
+  }
+
+  public function testWriteableThrowsException() {
+    $config_defaults = [
+      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+      ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
+    ];
+    $yaml_file = $this->getTestFilePath('conflict.yml');
+    file_put_contents($yaml_file, "file_permissions:\n  writeable: '0600'");
+    $this->expectException(\RuntimeException::class);
+    $this->expectExceptionMessage('The "file_permissions.writeable" key is deprecated and has been removed.  Please use "writable" instead.');
+    (new LoadConfig($config_defaults))([$yaml_file]);
+  }
+
+  public function testTopLevelWriteableThrowsException() {
+    $config_defaults = [
+      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+    ];
+    $yaml_file = $this->getTestFilePath('top_level_writeable.yml');
+    file_put_contents($yaml_file, "writeable:\n  - foo.txt");
+    $this->expectException(\RuntimeException::class);
+    $this->expectExceptionMessage('The "writeable" key is deprecated and has been removed.  Please use "writable" instead.');
+    (new LoadConfig($config_defaults))([$yaml_file]);
+  }
+
+  public function testInvalidPermissionModeThrows() {
+    $config_defaults = [
+      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+    ];
+    $yaml_file = $this->getTestFilePath('invalid.yml');
+    file_put_contents($yaml_file, "file_permissions:\n  default: '640'");
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Invalid permission mode "640" for key "file_permissions.default"');
+    (new LoadConfig($config_defaults))([$yaml_file]);
+  }
+
+  public function testLegacyIntPermissionModeIsNormalized() {
+    $config_defaults = [
+      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+    ];
+    $yaml_file = $this->getTestFilePath('legacy.yml');
+    // PHP/Yaml might parse 0644 as 420 (octal to decimal)
+    file_put_contents($yaml_file, "file_permissions:\n  default: 0644");
+    $config = (new LoadConfig($config_defaults))([$yaml_file]);
     $this->assertSame('0644', $config[ConfigInterface::FILE_PERMISSIONS]['default']);
   }
 

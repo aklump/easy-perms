@@ -198,7 +198,7 @@ EOT;
     touch($test_file);
 
     $config_file = $this->getTestFilePath('apply_config.yml');
-    $content = "writeable:\n  - to_chmod.txt";
+    $content = "writable:\n  - to_chmod.txt";
     $filesystem->dumpFile($config_file, $content);
 
     $commandTester->execute(['config' => [$config_file]], ['verbosity' => \Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERY_VERBOSE]);
@@ -220,8 +220,8 @@ EOT;
     }
 
     $config_file = $this->getTestFilePath('apply_dir_config.yml');
-    // Use writeable which should use directory permissions for the directory.
-    $content = "writeable:\n  - to_chmod_dir";
+    // Use writable which should use directory permissions for the directory.
+    $content = "writable:\n  - to_chmod_dir";
     $filesystem->dumpFile($config_file, $content);
 
     $commandTester->execute(['config' => [$config_file]], ['verbosity' => \Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERY_VERBOSE]);
@@ -251,7 +251,7 @@ EOT;
     symlink($target, $link);
 
     $config_file = $this->getTestFilePath('broken_link_config.yml');
-    $content = "writeable:\n  - broken_link";
+    $content = "writable:\n  - broken_link";
     $filesystem->dumpFile($config_file, $content);
 
     $commandTester->execute(['config' => [$config_file]], ['verbosity' => \Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERY_VERBOSE]);

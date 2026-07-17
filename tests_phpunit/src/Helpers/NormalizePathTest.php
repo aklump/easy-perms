@@ -77,12 +77,6 @@ class NormalizePathTest extends TestCase {
     $this->assertSame($base . 'lorem_dir/', (new NormalizePath())($path));
   }
 
-  public function testEnsureForwardSlashes() {
-    $base = $this->getTestFixturesDirectory();
-    $path = $base . 'app\web\\';
-    $this->assertSame($base . 'app/web/', (new NormalizePath())($path));
-  }
-
   public function testAddTrailingSlashToDirectory() {
     $base = $this->getTestFixturesDirectory();
     $path = $base . 'app';

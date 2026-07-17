@@ -8,7 +8,7 @@ interface ConfigInterface {
 
   const DEFAULT = 'default';
 
-  const WRITEABLE = 'writeable';
+  const WRITABLE = 'writable';
 
   const EXECUTABLE = 'executable';
 

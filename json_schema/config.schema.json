@@ -19,7 +19,7 @@
         "default": {
           "$ref": "#/$defs/octal"
         },
-        "writeable": {
+        "writable": {
           "$ref": "#/$defs/octal"
         },
         "executable": {
@@ -37,7 +37,7 @@
     "default": {
       "$ref": "#/$defs/paths_set"
     },
-    "writeable": {
+    "writable": {
       "$ref": "#/$defs/paths_set"
     },
     "executable": {

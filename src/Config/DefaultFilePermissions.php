@@ -12,7 +12,7 @@ class DefaultFilePermissions implements \JsonSerializable {
     return [
       'default' => '0640',
       'readonly' => '0440',
-      'writeable' => '0660',
+      'writable' => '0660',
       'executable' => '0770',
     ];
   }

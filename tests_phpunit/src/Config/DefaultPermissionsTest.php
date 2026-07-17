@@ -17,9 +17,9 @@ class DefaultPermissionsTest extends TestCase {
     $data = $perms->jsonSerialize();
     $this->assertArrayHasKey('default', $data);
     $this->assertArrayHasKey('readonly', $data);
-    $this->assertArrayHasKey('writeable', $data);
+    $this->assertArrayHasKey('writable', $data);
     $this->assertArrayHasKey('executable', $data);
-    $this->assertSame(0750, $data['default']);
+    $this->assertSame('0750', $data['default']);
   }
 
   public function testDefaultFilePermissions() {
@@ -27,8 +27,8 @@ class DefaultPermissionsTest extends TestCase {
     $data = $perms->jsonSerialize();
     $this->assertArrayHasKey('default', $data);
     $this->assertArrayHasKey('readonly', $data);
-    $this->assertArrayHasKey('writeable', $data);
+    $this->assertArrayHasKey('writable', $data);
     $this->assertArrayHasKey('executable', $data);
-    $this->assertSame(0640, $data['default']);
+    $this->assertSame('0640', $data['default']);
   }
 }

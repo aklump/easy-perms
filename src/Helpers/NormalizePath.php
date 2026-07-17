@@ -27,7 +27,7 @@ class NormalizePath {
    *
    * @return string
    */
-  public function __invoke(string $path, bool $is_dir = NULL): string {
+  public function __invoke(string $path, ?bool $is_dir = NULL): string {
     $path = Path::normalize($path);
     if (!Path::isAbsolute($path)) {
       if (empty($this->getBasePath())) {

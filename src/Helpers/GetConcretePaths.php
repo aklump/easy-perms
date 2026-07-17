@@ -24,7 +24,7 @@ class GetConcretePaths {
    *   Passing a cache instance in most all cases will enhance performance, that
    *   is decrease the time used to complete multiple calls.
    */
-  public function __construct(CacheInterface $filepath_cache = NULL) {
+  public function __construct(?CacheInterface $filepath_cache = NULL) {
     $this->cache = $filepath_cache;
   }
 

@@ -2,7 +2,7 @@
 s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd -P "$(dirname "$s")" && pwd)";s="$(readlink "$s")";[[ $s != /* ]] && s="$d/$s";done;__DIR__=$(cd -P "$(dirname "$s")" && pwd)
 
 # ========= Begin Configutation =========
-PHP=/Applications/MAMP/bin/php/php7.4.33/bin/php
+PHP=$(command -v php)
 INSTALL_PATH="../tests_phpunit/"
 CONFIG="../tests_phpunit/phpunit.xml"
 VENDOR="../vendor/"

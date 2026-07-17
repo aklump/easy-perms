@@ -2,7 +2,7 @@ readonly:
   - apple
 default:
   - banana
-writeable:
+writable:
   - carrot
 executable:
   - daikon

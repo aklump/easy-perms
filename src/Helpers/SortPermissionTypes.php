@@ -15,7 +15,7 @@ class SortPermissionTypes {
   public function __invoke(array $types) {
     $weights = array_flip([
       ConfigInterface::DEFAULT,
-      ConfigInterface::WRITEABLE,
+      ConfigInterface::WRITABLE,
       ConfigInterface::EXECUTABLE,
       ConfigInterface::READONLY,
     ]);
