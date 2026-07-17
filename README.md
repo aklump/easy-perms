@@ -40,20 +40,20 @@ The files in a web app are likely to require writeable and/or executable permiss
 
 ```yaml
 file_permissions:
-  default: 0644
-  readonly: 0444
-  writeable: 0666
-  executable: 0744
+  default: '0640'
+  readonly: '0440'
+  writeable: '0660'
+  executable: '0770'
 directory_permissions:
-  default: 0755
-  readonly: 0555
-  writeable: 0777
-  executable: 0755
+  default: '0750'
+  readonly: '0550'
+  writeable: '0770'
+  executable: '0750'
 default:
-  - ../../**
-readonly: [ ]
-writeable: [ ]
-executable: [ ]
+  - '../../**'
+readonly: []
+writeable: []
+executable: []
 ```
 **File:** `easy-perms.dev.yml`
 
@@ -62,6 +62,7 @@ executable:
   - ../../**/node_modules/.bin/*
   - ../../**/vendor/bin/*
   - ../../node_modules/.bin/*
+  - ../../vendor/**/phpunit
   - ../../vendor/bin/*
 ```
 

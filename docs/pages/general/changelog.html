@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.20">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.20">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.20">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.21">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.21">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.21">
         <title>Changelog | Easy Perms</title>
   </head>
 <body class="my-5">
@@ -45,9 +45,11 @@
       <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<h2>[Unreleased]</h2>
+<h2>[0.0.21] - 2026-07-17</h2>
+<h3>Fixed</h3>
 <ul>
-<li>lorem</li>
+<li>Fixed a bug where configuration defaults were incorrectly merged into every file load, causing them to supersede actual settings when multiple files (e.g., <code>easy-perms.yml</code> and <code>easy-perms.dev.yml</code>) were used.</li>
+<li>Improved octal value handling in configuration merging to ensure consistency when YAML parsers interpret permissions as integers.</li>
 </ul>
     </article>
   </div>
@@ -56,9 +58,9 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.20</strong>
+        <strong>0.0.21</strong>
         &bull;
-                    Last Update: <strong>7/15/2026</strong>
+                    Last Update: <strong>7/17/2026</strong>
           </div>
   </footer>
 
@@ -231,9 +233,9 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.20"></script>
-  <script src="../../dist/lunr.js?ver=0.0.20"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.20"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.21"></script>
+  <script src="../../dist/lunr.js?ver=0.0.21"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.21"></script>
 
 </body>
 </html>
