@@ -1,3 +1,4 @@
 executable:
   - ../../bin/*.sh
   - ../../vendor/bin/*
+  - ../../vendor/**/phpunit

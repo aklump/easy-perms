@@ -2,4 +2,5 @@ executable:
   - ../../**/node_modules/.bin/*
   - ../../**/vendor/bin/*
   - ../../node_modules/.bin/*
+  - ../../vendor/**/phpunit
   - ../../vendor/bin/*

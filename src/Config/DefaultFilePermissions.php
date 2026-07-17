@@ -10,10 +10,10 @@ class DefaultFilePermissions implements \JsonSerializable {
   #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return [
-      'default' => 0640,
-      'readonly' => 0440,
-      'writeable' => 0660,
-      'executable' => 0770,
+      'default' => '0640',
+      'readonly' => '0440',
+      'writeable' => '0660',
+      'executable' => '0770',
     ];
   }
 }

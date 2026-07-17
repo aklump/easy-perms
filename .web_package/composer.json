@@ -1,0 +1,15 @@
+{
+  "name": "web-package/easy-perms",
+  "authors": [
+    {
+      "name": "Aaron Klump",
+      "email": "sourcecode@intheloftstudios.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "AKlump\\EasyPerms\\": "../src/"
+    }
+  },
+  "require": {}
+}
