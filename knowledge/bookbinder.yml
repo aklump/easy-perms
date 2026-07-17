@@ -5,7 +5,7 @@
     - copy images
   pages:
     - '**/README.md'
-#    - '**/CHANGELOG.md'
+    - '**/CHANGELOG.md'
 -
   format: website
   output: ../docs
