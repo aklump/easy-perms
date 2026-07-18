@@ -24,7 +24,7 @@ coverage_reports="$INSTALL_PATH/reports"
 export INSTALL_PATH
 
 # ========= Execute PHPUnit =========
-#"$PHP" "$VENDOR/bin/phpunit" -c "$CONFIG" "$@"
+"$PHP" "$VENDOR/bin/phpunit" -c "$CONFIG" "$@"
 #"$PHP" "$VENDOR/bin/phpunit" -c "$CONFIG" --testdox "$@"
-export XDEBUG_MODE=$XDEBUG_MODE,coverage;"$PHP" "$VENDOR/bin/phpunit" -c "$CONFIG" --coverage-html="$coverage_reports" "$@"
-echo "$coverage_reports/index.html"
+#export XDEBUG_MODE=$XDEBUG_MODE,coverage;"$PHP" "$VENDOR/bin/phpunit" -c "$CONFIG" --coverage-html="$coverage_reports" "$@"
+#echo "$coverage_reports/index.html"

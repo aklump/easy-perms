@@ -27,7 +27,7 @@ class HelpersTest extends TestCase {
   public function testGetShortPath() {
     $base = '/Users/aklump/Code';
     $get_short = new GetShortPath($base);
-    $this->assertSame('Packages/bash/easy-perms', $get_short($base . '/Packages/bash/easy-perms'));
+    $this->assertSame('Packages/cli/easy-perms', $get_short($base . '/Packages/cli/easy-perms'));
     $this->assertSame('/Other/Path', $get_short('/Other/Path'));
 
     $cwd = getcwd();
@@ -38,7 +38,7 @@ class HelpersTest extends TestCase {
   public function testGetLabel() {
     $cwd = getcwd();
     $get_label = new GetLabel();
-    
+
     $file_path = $cwd . '/some_file.txt';
     $this->assertSame('some_file.txt', $get_label($file_path));
 
