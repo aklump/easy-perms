@@ -7,5 +7,5 @@ preserve_patch_zero: true
 push_master: true
 push_tags: true
 remote: origin
-version: 0.0.22
+version: 0.0.23
 version_file: .web_package/config.yml
