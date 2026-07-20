@@ -7,7 +7,7 @@
       <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.24">
       <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.24">
       <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.24">
-        <title>Changelog | Easy Perms</title>
+        <title>Config Optimization | Easy Perms</title>
   </head>
 <body class="my-5">
 
@@ -32,7 +32,7 @@
 
       </div>
       <div class="header__tags me-3">  </div>
-      <div class="header__page-numbers flex-shrink-1">6
+      <div class="header__page-numbers flex-shrink-1">8
         / 8</div>
     </div>
   </div>
@@ -41,40 +41,28 @@
 <main class="container-md flex-column">
   <div class="row mb-5 pt-5">
     <article class="col">
-      <h1 class="mb-4 text-primary">Changelog</h1>
-      <p>All notable changes to this project will be documented in this file.</p>
-<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
-and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<h2>[0.0.24] - 2026-07-20</h2>
-<h3>Added</h3>
+      <h1 class="mb-4 text-primary">Config Optimization</h1>
+      <p>The <code>optimize</code> command is used to clean up and organize your configuration files. It performs several operations to ensure your configuration remains concise and manageable.</p>
+<h2>Key Features</h2>
 <ul>
-<li>Added <code>optimize</code> command to consolidate configuration paths, support glob patterns, and create backups.</li>
+<li><strong>Consolidation</strong>: It removes redundant explicit paths that are already covered by glob patterns, favoring the more general glob patterns.</li>
+<li><strong>Sorting</strong>: It sorts paths alphabetically within each group (e.g., <code>writable</code>, <code>readonly</code>), ignoring single quotes during the sorting process for consistent results.</li>
+<li><strong>Backups</strong>: Before making any changes, it creates a backup of your original configuration file with a timestamp suffix.</li>
 </ul>
-<h3>Changed</h3>
-<ul>
-<li>Updated <code>apply-perms.sh</code> with <code>--no-dev</code> and <code>--help</code> options, and improved production environment detection.</li>
-<li>Refined configuration loading to support path consolidation.</li>
-</ul>
-<h2>[0.0.23] - 2026-07-20</h2>
-<h3>Changed</h3>
-<ul>
-<li>Updated documentation build process and refined PHPUnit configuration.</li>
-</ul>
-<h3>Removed</h3>
-<ul>
-<li>Removed unused scripts: <code>bin/bind_book.sh</code> and <code>bin/flush_book.sh</code>.</li>
-</ul>
-<h2>[0.0.22] - 2026-07-17</h2>
-<h3>Removed</h3>
-<ul>
-<li><strong>BREAKING CHANGE</strong>: The <code>writeable</code> configuration key has been removed in favor of the canonical <code>writable</code>. Using <code>writeable</code> in any configuration file will now throw a <code>RuntimeException</code>.</li>
-</ul>
-<h2>[0.0.21] - 2026-07-17</h2>
-<h3>Fixed</h3>
-<ul>
-<li>Fixed a bug where configuration defaults were incorrectly merged into every file load, causing them to supersede actual settings when multiple files (e.g., <code>easy-perms.yml</code> and <code>easy-perms.dev.yml</code>) were used.</li>
-<li>Improved octal value handling in configuration merging to ensure consistency when YAML parsers interpret permissions as integers.</li>
-</ul>
+<h2>Usage</h2>
+<p>You can run the optimization as often as you like:</p>
+<pre><code class="bash">easy-perms optimize easy-perms.yml
+</code></pre>
+<p>You can also use glob patterns to optimize multiple files at once:</p>
+<pre><code class="bash">easy-perms optimize *.yml
+</code></pre>
+<h2>Reviewing Changes</h2>
+<p>While the optimization process is automated, it is recommended to:</p>
+<ol>
+<li>Review the optimized configuration file to ensure it meets your expectations.</li>
+<li>Verify that the permissions are still applied correctly using the <code>apply</code> command.</li>
+<li>Periodically review and delete the timestamped backup files (e.g., <code>easy-perms.20230101120000.yml</code>) once you are satisfied with the changes.</li>
+</ol>
     </article>
   </div>
 </main>
@@ -96,7 +84,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
       bi-caret-left-fill"></i> Easy Perms</a>
   
     
-              <a href="workflow.html" class="btn nav__prev-page js-nav__prev-page
+              <a href="hints.html" class="btn nav__prev-page js-nav__prev-page
     btn-primary"><i class="bi
       bi-caret-left-fill"></i></a>
   
@@ -107,9 +95,8 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
        aria-controls="table-of-contents"><i class="bi
            bi-list-ol"></i></a>
     
-              <a href="hints.html" class="btn nav__next-page js-nav__next-page
-    btn-primary"><i class="bi bi-file-earmark"></i> Hints <i class="bi
-       bi-caret-right-fill"></i></a>
+              <span class="btn nav__next-page js-nav__next-page
+    btn-primary"></span>
   
     
               <span class="btn nav__next-chapter btn-secondary "></span>

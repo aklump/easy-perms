@@ -29,6 +29,7 @@ class GetConcretePathsCoverageTest extends TestCase {
     $obj = new GetConcretePaths($cache);
     // Use reflection to call private getFileList
     $method = new \ReflectionMethod(GetConcretePaths::class, 'getFileList');
+    $method->setAccessible(TRUE);
     
     $result = $method->invoke($obj, $start_dir);
     $this->assertSame($cached_data, $result);
@@ -47,6 +48,7 @@ class GetConcretePathsCoverageTest extends TestCase {
 
     $obj = new GetConcretePaths($cache);
     $method = new \ReflectionMethod(GetConcretePaths::class, 'getFileList');
+    $method->setAccessible(TRUE);
     
     $result = $method->invoke($obj, $sub_dir);
     $this->assertCount(1, $result);
