@@ -82,7 +82,8 @@ executable:
 
 1. Use `vendor/bin/easy-perms apply bin/config/easy-perms.yml bin/config/easy-perms.dev.yml` to apply the permissions in a dev environment.
 2. Use `vendor/bin/easy-perms apply bin/config/easy-perms.yml` to apply the permissions in a production environment.
-3. Or use the controller `bin/apply-perms.sh` to make applying permissions easy.
+3. Use `vendor/bin/easy-perms optimize bin/config/easy-perms.yml` to consolidate paths in your configuration file.
+4. Or use the controller `bin/apply-perms.sh` to make applying permissions easy.
 
 ## Controller
 
@@ -134,11 +135,55 @@ if [[ ! -f "$main_config" ]]; then
 fi
 
 config_paths=("$main_config")
-if ! is_prod && [[ -f "$dev_config" ]]; then
+pass_args=()
+merge_dev=1
+
+show_help() {
+  cat <<'EOF'
+Usage: apply-perms.sh [--no-dev] [--help] [--] [easy-perms-args...]
+
+Wrapper around aklump/easy-perms.
+
+Options:
+  --no-dev   Do not merge easy-perms.dev.yml
+  -h, --help Show this help message
+EOF
+}
+
+while (($#)); do
+  case "$1" in
+    --no-dev)
+      merge_dev=0
+      ;;
+    --help|-h)
+      show_help
+      exit 0
+      ;;
+    --)
+      shift
+      pass_args+=("$@")
+      break
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      exit 2
+      ;;
+    *)
+      pass_args+=("$1")
+      ;;
+  esac
+  shift
+done
+
+if [[ "$merge_dev" -eq 1 ]] && ! is_prod && [[ -n "${dev_config:-}" ]] && [[ -f "$dev_config" ]]; then
   config_paths+=("$dev_config")
 fi
 
-"$easy_perms" apply "${config_paths[@]}" "$@"
+if ((${#pass_args[@]})); then
+  "$easy_perms" apply "${config_paths[@]}" "${pass_args[@]}"
+else
+  "$easy_perms" apply "${config_paths[@]}"
+fi
 ```
 
 To apply the configured permission to your project at any time, execute the controller like this:
@@ -177,7 +222,7 @@ More information may be available in the PHP error log, here is an example:
 
 ## Sandbox Installation (w/Composer)
 
-A sandboxed installation separates this project, its dependencies, and even the PHP version from your main application. The project is installed in an isolated, hidden subdirectory in the root of your project. This is particularly useful if you have conflicts with your application's dependencies or if you need to use a different PHP version. It functions similarly to [asdf](https://asdf-vm.com/) shims, providing a project-specific environment for the tool.
+A sandboxed installation separates this project, its dependencies, and even the PHP version from your main application.  In a team environment is allows one member to use a package independently. The project is installed in an isolated, hidden subdirectory in the root directory. This is particularly useful if you have conflicts with your application's dependencies or if you need to use a different PHP version, or you don't want to commit the package to the repo. It functions similarly to [asdf](https://asdf-vm.com/) shims, providing a project-specific environment for the tool.
 
 ### Install in your Project
 

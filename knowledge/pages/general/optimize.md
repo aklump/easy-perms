@@ -1,3 +1,8 @@
+<!--
+id: optimize
+tags: ''
+-->
+
 # Config Optimization
 
 The `optimize` command is used to clean up and organize your configuration files. It performs several operations to ensure your configuration remains concise and manageable.
