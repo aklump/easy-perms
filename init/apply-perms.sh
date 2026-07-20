@@ -41,8 +41,52 @@ if [[ ! -f "$main_config" ]]; then
 fi
 
 config_paths=("$main_config")
-if ! is_prod && [[ -f "$dev_config" ]]; then
+pass_args=()
+merge_dev=1
+
+show_help() {
+  cat <<'EOF'
+Usage: apply-perms.sh [--no-dev] [--help] [--] [easy-perms-args...]
+
+Wrapper around aklump/easy-perms.
+
+Options:
+  --no-dev   Do not merge easy-perms.dev.yml
+  -h, --help Show this help message
+EOF
+}
+
+while (($#)); do
+  case "$1" in
+    --no-dev)
+      merge_dev=0
+      ;;
+    --help|-h)
+      show_help
+      exit 0
+      ;;
+    --)
+      shift
+      pass_args+=("$@")
+      break
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      exit 2
+      ;;
+    *)
+      pass_args+=("$1")
+      ;;
+  esac
+  shift
+done
+
+if [[ "$merge_dev" -eq 1 ]] && ! is_prod && [[ -n "${dev_config:-}" ]] && [[ -f "$dev_config" ]]; then
   config_paths+=("$dev_config")
 fi
 
-"$easy_perms" apply "${config_paths[@]}" "$@"
+if ((${#pass_args[@]})); then
+  "$easy_perms" apply "${config_paths[@]}" "${pass_args[@]}"
+else
+  "$easy_perms" apply "${config_paths[@]}"
+fi

@@ -1,8 +1,8 @@
 # https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-file-permissions-and-ownership#special-considerations-for-settings-php
 readonly:
   - ../../.env
-  - ../../sites/*/
-  - ../../sites/*/settings*
+  - ../../web/sites/*/
+  - ../../web/sites/*/settings*
 writable:
   - ../../private/*/files/
   - ../../private/*/files/**
