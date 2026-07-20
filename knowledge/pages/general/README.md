@@ -41,7 +41,8 @@ The files in a web app are likely to require writable and/or executable permissi
 
 1. Use `vendor/bin/easy-perms apply bin/config/easy-perms.yml bin/config/easy-perms.dev.yml` to apply the permissions in a dev environment.
 2. Use `vendor/bin/easy-perms apply bin/config/easy-perms.yml` to apply the permissions in a production environment.
-3. Or use the controller `bin/apply-perms.sh` to make applying permissions easy.
+3. Use `vendor/bin/easy-perms optimize bin/config/easy-perms.yml` to consolidate paths in your configuration file.
+4. Or use the controller `bin/apply-perms.sh` to make applying permissions easy.
 
 ## Controller
 

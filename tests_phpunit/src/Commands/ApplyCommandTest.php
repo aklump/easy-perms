@@ -229,7 +229,7 @@ EOT;
     $output = $commandTester->getDisplay();
     $this->assertStringContainsString($this->getLabel($config_file, 'to_chmod_dir'), $output);
     $this->assertStringContainsString('Permission setting was successful.', $output);
-    
+
     // Clean up
     $this->deleteTestFile($test_dir);
   }
@@ -242,7 +242,7 @@ EOT;
     $filesystem = new Filesystem();
     $target = $this->getTestFilePath('non_existent_target');
     $link = $this->getTestFilePath('broken_link');
-    
+
     // Create a broken symlink.
     // NOTE: Symfony Filesystem::symlink might resolve, so we might need native or be careful.
     if (file_exists($link)) {
@@ -258,7 +258,7 @@ EOT;
 
     $output = $commandTester->getDisplay();
     $this->assertStringContainsString('Permission setting was successful.', $output);
-    
+
     // Clean up
     unlink($link);
   }
@@ -271,7 +271,7 @@ EOT;
     $filesystem = new Filesystem();
     $test_file = $this->getTestFilePath('already_correct.txt');
     $filesystem->dumpFile($test_file, 'content');
-    
+
     // Set permissions to 0440 (standard for readonly in this app's defaults)
     chmod($test_file, 0440);
 
@@ -295,7 +295,7 @@ EOT;
     $filesystem = new Filesystem();
     $test_file = $this->getTestFilePath('duplicate_target.txt');
     $filesystem->dumpFile($test_file, 'content');
-    
+
     // Create two symlinks to the same file.
     $link1 = $this->getTestFilePath('link1');
     $link2 = $this->getTestFilePath('link2');
@@ -316,7 +316,7 @@ EOT;
     $this->assertStringContainsString($this->getLabel($config_file, 'link1'), $output);
     $this->assertStringContainsString($this->getLabel($config_file, 'link2'), $output);
     $this->assertStringContainsString('Permission setting was successful.', $output);
-    
+
     // Clean up
     unlink($link1);
     unlink($link2);
@@ -324,5 +324,42 @@ EOT;
 
   public function testApplyPermissionsHandlesFailures() {
     $this->assertTrue(TRUE);
+  }
+
+  public function testApplyHandlesGlobArguments() {
+    $config_file1 = $this->getTestFilePath('glob1.yml', TRUE);
+    $config_file2 = $this->getTestFilePath('glob2.yml', TRUE);
+    $file1 = $this->getTestFilePath('foo/bar.txt', TRUE);
+    $file2 = $this->getTestFilePath('foo/baz.txt', TRUE);
+
+    $content1 = "readonly:\n  - foo/bar.txt";
+    $content2 = "readonly:\n  - foo/baz.txt";
+    file_put_contents($config_file1, $content1);
+    file_put_contents($config_file2, $content2);
+
+    chmod($file1, 0777);
+    chmod($file2, 0777);
+
+    $application = $this->getApplication();
+    $command = $application->find('apply');
+    $commandTester = new CommandTester($command);
+
+    // Use a glob that matches both files
+    $glob = dirname($config_file1) . '/glob*.yml';
+    $commandTester->execute(['config' => [$glob]]);
+
+    $output = $commandTester->getDisplay();
+    // Verify both files were processed
+    $this->assertStringContainsString('Calculating permissions', $output);
+    $this->assertStringContainsString('Permission setting was successful.', $output);
+
+    // Check permissions (readonly should be 0440 or similar, depends on OS but definitely not 0777)
+    clearstatcache();
+    $perms1 = fileperms($file1) & 0777;
+    $perms2 = fileperms($file2) & 0777;
+    $this->assertNotEquals(0777, $perms1, "File 1 permissions should not be 0777. Actual: " . decoct($perms1) . "\nOutput:\n" . $output);
+    $this->assertNotEquals(0777, $perms2, "File 2 permissions should not be 0777. Actual: " . decoct($perms2) . "\nOutput:\n" . $output);
+    $this->assertEquals(0440, $perms1, "File 1 permissions should be 0440. Actual: " . decoct($perms1) . "\nOutput:\n" . $output);
+    $this->assertEquals(0440, $perms2, "File 2 permissions should be 0440. Actual: " . decoct($perms2) . "\nOutput:\n" . $output);
   }
 }

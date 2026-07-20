@@ -34,7 +34,7 @@ class GetConcretePaths {
    * @param string $path
    *   A file/dir matching rule or value.
    *
-   * @return string[]
+   * @return array[]
    *   All matched paths sorted alphabetically.  If a path is matched to a
    *   symlink, the target of the symlink will be included in this list.
    *

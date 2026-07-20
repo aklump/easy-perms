@@ -3,6 +3,7 @@
 
 use AKlump\EasyPerms\Commands\ApplyCommand;
 use AKlump\EasyPerms\Commands\InitCommand;
+use AKlump\EasyPerms\Commands\OptimizeCommand;
 use AKlump\EasyPerms\Environment\CheckEnvironment;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Yaml\Yaml;
@@ -24,5 +25,6 @@ $application = new Application('perms', $version);
 $environment_checker = new CheckEnvironment();
 $application->add(new ApplyCommand($environment_checker));
 $application->add(new InitCommand());
+$application->add(new OptimizeCommand());
 $application->setDefaultCommand('help');
 $application->run();

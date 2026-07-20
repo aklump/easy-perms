@@ -3,6 +3,7 @@
 namespace AKlump\EasyPerms\Commands;
 
 use AKlump\EasyPerms\Cache;
+use AKlump\EasyPerms\Config\ResolveConfigPaths;
 use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Config\DefaultDirectoryPermissions;
 use AKlump\EasyPerms\Config\DefaultFilePermissions;
@@ -52,10 +53,8 @@ class ApplyCommand extends Command {
     (new HandleMemory())();
     $get_short_path = new GetShortPath();
     $start_time = microtime(TRUE);
-    $start_dir = getcwd() . '/';
     $filesystem = new Filesystem();
-    $config_paths = $input->getArgument('config');
-    $config_paths = array_map(fn($path) => Path::makeAbsolute($path, $start_dir), $config_paths);
+    $config_paths = (new ResolveConfigPaths())($input->getArgument('config'));
 
     foreach ($config_paths as $path) {
       if (!$filesystem->exists($path)) {
@@ -131,7 +130,7 @@ class ApplyCommand extends Command {
         foreach ($items as $data) {
           $item = $data['path'];
           $is_item_dir = $data['is_dir'];
-          $current_perms = $data['perms'] ?? NULL;
+          $current_perms = $data['perms'];
           $perms_to_set[$item] = [$meta];
           if ($is_item_dir) {
             $perms_to_set[$item][] = (string) $config[ConfigInterface::DIRECTORY_PERMISSIONS][$type];
