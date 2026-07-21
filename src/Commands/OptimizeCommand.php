@@ -7,6 +7,7 @@ use AKlump\EasyPerms\Config\LoadConfigContent;
 use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Helpers\GetConcretePaths;
 use AKlump\EasyPerms\Helpers\GetShortPath;
+use AKlump\EasyPerms\Helpers\HandleMemory;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -27,6 +28,7 @@ class OptimizeCommand extends Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
+    (new HandleMemory())();
     $filesystem = new Filesystem();
     $get_short_path = new GetShortPath();
     $config_paths = (new ResolveConfigPaths())($input->getArgument('config'));
