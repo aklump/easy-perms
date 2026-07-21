@@ -52,7 +52,7 @@ class OptimizeCommandTest extends TestCase {
 
     // Check that backup was created
     $path_info = pathinfo($config_file);
-    $backup_glob = sprintf('%s/%s.[0-9]*.%s', $path_info['dirname'], $path_info['filename'], $path_info['extension']);
+    $backup_glob = sprintf('%s/.[0-9]*.%s.%s', $path_info['dirname'], $path_info['filename'], $path_info['extension']);
     $backups = glob($backup_glob);
     $this->assertGreaterThanOrEqual(1, count($backups));
   }
@@ -120,7 +120,7 @@ class OptimizeCommandTest extends TestCase {
     // If we want to test literal single quotes, we might need to be careful with how YAML parses them.
     // Actually, in YAML, 'apple.txt' is parsed as the string apple.txt.
     // To have literal quotes, it would be "'apple.txt'".
-    
+
     $this->assertEquals([
       "'apple.txt'",
       'banana.txt',

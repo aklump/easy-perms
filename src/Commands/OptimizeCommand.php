@@ -97,7 +97,7 @@ class OptimizeCommand extends Command {
           $progress_bar->clear();
         }
         $path_info = pathinfo($path);
-        $backup_path = sprintf('%s/%s.%s.%s', $path_info['dirname'], $path_info['filename'], date('YmdHis'), $path_info['extension']);
+        $backup_path = sprintf('%s/.%s.%s.%s', $path_info['dirname'], date('YmdHis'), $path_info['filename'], $path_info['extension']);
         $filesystem->copy($path, $backup_path);
         $output->writeln(sprintf('<info>Backup created at %s</info>', $get_short_path($backup_path)));
 
@@ -163,9 +163,10 @@ class OptimizeCommand extends Command {
           // i is a subset of j
           if ($resolved[$j]['is_glob'] && !$resolved[$i]['is_glob']) {
             $to_remove[$i] = TRUE;
-          } elseif ($resolved[$i]['original'] === $resolved[$j]['original'] && $i < $j) {
-              // Exact same pattern, remove the earlier one
-              $to_remove[$i] = TRUE;
+          }
+          elseif ($resolved[$i]['original'] === $resolved[$j]['original'] && $i < $j) {
+            // Exact same pattern, remove the earlier one
+            $to_remove[$i] = TRUE;
           }
         }
       }
