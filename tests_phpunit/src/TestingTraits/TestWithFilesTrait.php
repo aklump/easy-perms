@@ -9,14 +9,24 @@ namespace AKlump\EasyPerms\Tests\TestingTraits;
  * - Fixtures: Read-only files that exist in the repository and are used as
  *   static input or reference for tests.
  * - Test Files: Temporary files or directories created during a test's
- *   execution and typically deleted during tearDown.
+ *   execution, deleted after each test by ::tearDown.
+ *
+ * The test files directory is shared by every test, so cleanup belongs here
+ * rather than in each class: a class that forgot it left its files for whichever
+ * class happened to run next to remove.
+ *
+ * Should a class need its own tearDown, that definition takes precedence over
+ * this one, and it must call ::deleteAllTestFiles itself.
  */
 trait TestWithFilesTrait {
 
+  protected function tearDown(): void {
+    $this->deleteAllTestFiles();
+    parent::tearDown();
+  }
+
   /**
    * Delete all the files in the test files directory.
-   *
-   * This can be added to the tearDown method as appropriate.
    */
   public function deleteAllTestFiles(): void {
     $basepath = $this->getTestFilesDirectory();

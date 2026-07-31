@@ -14,11 +14,6 @@ class GetFileListTest extends TestCase {
 
   use TestWithFilesTrait;
 
-  protected function tearDown(): void {
-    $this->deleteAllTestFiles();
-    parent::tearDown();
-  }
-
   public function testInvokeReturnsFilesRecursively() {
     $base = $this->getTestFilePath('file_list_test/', TRUE);
     mkdir($base . 'subdir');

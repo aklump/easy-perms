@@ -148,6 +148,13 @@ class OptimizeCommand extends Command {
     $to_remove = [];
     $count = count($resolved);
     for ($i = 0; $i < $count; $i++) {
+      // A pattern matching nothing right now cannot be shown to be covered by
+      // another one; array_diff() reports the empty set as a subset of
+      // everything, which would discard configuration written for paths that do
+      // not exist yet--build artifacts, or files an install step creates.
+      if (empty($resolved[$i]['concrete'])) {
+        continue;
+      }
       for ($j = 0; $j < $count; $j++) {
         if ($i === $j) {
           continue;

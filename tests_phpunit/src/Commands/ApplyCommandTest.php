@@ -40,11 +40,6 @@ class ApplyCommandTest extends TestCase {
     parent::setUp();
   }
 
-  protected function tearDown(): void {
-    $this->deleteAllTestFiles();
-    parent::tearDown();
-  }
-
   private function getApplication(): Application {
     $application = new Application();
     $check_environment = new class() extends CheckEnvironment {

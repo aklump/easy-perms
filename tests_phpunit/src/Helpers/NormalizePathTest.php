@@ -14,11 +14,6 @@ class NormalizePathTest extends TestCase {
 
   use TestWithFilesTrait;
 
-  protected function tearDown(): void {
-    $this->deleteAllTestFiles();
-    parent::tearDown();
-  }
-
   public function dataFortestInvokeProvider(): array {
     $tests = [];
     $tests[] = [

@@ -8,6 +8,7 @@ use AKlump\EasyPerms\Config\ConfigInterface;
 use AKlump\EasyPerms\Config\DefaultDirectoryPermissions;
 use AKlump\EasyPerms\Config\DefaultFilePermissions;
 use AKlump\EasyPerms\Config\LoadConfig;
+use AKlump\EasyPerms\Config\LoadConfigContent;
 use AKlump\EasyPerms\Environment\CheckEnvironment;
 use AKlump\EasyPerms\Helpers\GetConcretePaths;
 use AKlump\EasyPerms\Helpers\GetLabel;
@@ -74,11 +75,6 @@ class ApplyCommand extends Command {
       }
     }
 
-    $config_defaults = [
-      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
-      ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
-    ];
-    $config = (new LoadConfig($config_defaults))($config_paths);
     $types = [
       ConfigInterface::READONLY => ['icon' => '📘️ '],
       ConfigInterface::DEFAULT => ['icon' => '☀️  '],
@@ -87,9 +83,38 @@ class ApplyCommand extends Command {
     ];
     $apply_order = (new SortPermissionTypes())(array_keys($types));
 
+    $config_defaults = [
+      ConfigInterface::FILE_PERMISSIONS => new DefaultFilePermissions(),
+      ConfigInterface::DIRECTORY_PERMISSIONS => new DefaultDirectoryPermissions(),
+    ];
+
+    // Configuration files are processed in order; each one is applied only
+    // after the previous one has been fully processed.  Therefore each file
+    // contributes only its own path patterns, but those patterns receive the
+    // permission modes in effect once that file has been merged.
+    $config_loader = new LoadConfig($config_defaults);
+    $load_config_content = new LoadConfigContent();
+    $merged_config = $config_loader->createDefaultConfig();
+    $configs_to_process = [];
+    foreach ($config_paths as $path) {
+      $one_config = $load_config_content($path);
+      $config_loader->mergeConfig($one_config, $merged_config);
+      $patterns = [];
+      foreach ($apply_order as $type) {
+        if (!empty($one_config[$type]) && is_array($one_config[$type])) {
+          $patterns[$type] = array_unique(array_filter($one_config[$type]));
+        }
+      }
+      $configs_to_process[] = [
+        'patterns' => $patterns,
+        'effective_config' => $merged_config,
+      ];
+    }
+
     $failures = [];
     $warnings = [];
     $perms_to_set = [];
+    $winner_by_realpath = [];
     $get_label = new GetLabel();
     $filepath_cache = new Cache();
     $get_concrete_paths = new GetConcretePaths($filepath_cache);
@@ -100,9 +125,11 @@ class ApplyCommand extends Command {
     if (!$is_very_verbose) {
       $output->writeln('<info>Calculating permissions...</info>');
       $total_patterns = 0;
-      foreach ($apply_order as $type) {
-        if (!empty($config[$type])) {
-          $total_patterns += count($config[$type]);
+      foreach ($configs_to_process as $process_config) {
+        foreach ($apply_order as $type) {
+          if (!empty($process_config['patterns'][$type])) {
+            $total_patterns += count($process_config['patterns'][$type]);
+          }
         }
       }
       $progress_bar = new ProgressBar($output, $total_patterns);
@@ -110,38 +137,48 @@ class ApplyCommand extends Command {
       $progress_bar->start();
     }
 
-    foreach ($apply_order as $type) {
-      $meta = $types[$type];
-      if (empty($config[$type])) {
-        continue;
-      }
-      foreach ($config[$type] as $path) {
-        $label = $get_label($path);
-        if ($is_very_verbose) {
-          $output->writeln(sprintf('<info>Calculating permissions: %s</info>', $label));
+    foreach ($configs_to_process as $process_config) {
+      $patterns = $process_config['patterns'];
+      $effective_config = $process_config['effective_config'];
+      foreach ($apply_order as $type) {
+        $meta = $types[$type];
+        if (empty($patterns[$type])) {
+          continue;
         }
-        elseif ($progress_bar) {
-          $progress_bar->advance();
-        }
-        $items = $get_concrete_paths($path);
-        if (empty($items)) {
-          $warnings[$label] = "No file(s) at $label";
-        }
-        foreach ($items as $data) {
-          $item = $data['path'];
-          $is_item_dir = $data['is_dir'];
-          $current_perms = $data['perms'];
-          $perms_to_set[$item] = [$meta];
-          if ($is_item_dir) {
-            $perms_to_set[$item][] = (string) $config[ConfigInterface::DIRECTORY_PERMISSIONS][$type];
+        foreach ($patterns[$type] as $path) {
+          $label = $get_label($path);
+          if ($is_very_verbose) {
+            $output->writeln(sprintf('<info>Calculating permissions: %s</info>', $label));
           }
-          else {
-            $perms_to_set[$item][] = (string) $config[ConfigInterface::FILE_PERMISSIONS][$type];
+          elseif ($progress_bar) {
+            $progress_bar->advance();
           }
-          $perms_to_set[$item][] = $current_perms;
-          $perms_to_set[$item][] = $data['realpath'] ?? NULL;
+          $items = $get_concrete_paths($path);
+          if (empty($items)) {
+            $warnings[$label] = "No file(s) at $label";
+          }
+          foreach ($items as $data) {
+            $item = $data['path'];
+            $is_item_dir = $data['is_dir'];
+            $current_perms = $data['perms'];
+            $realpath = $data['realpath'] ?? NULL;
+            if ($is_item_dir) {
+              $perms = (string) $effective_config[ConfigInterface::DIRECTORY_PERMISSIONS][$type];
+            }
+            else {
+              $perms = (string) $effective_config[ConfigInterface::FILE_PERMISSIONS][$type];
+            }
+            $perms_to_set[$item] = [$meta, $perms, $current_perms, $realpath];
+            // Several paths may address one inode, by symlink or hard link.
+            // Only one chmod can win, and it has to be the instruction that
+            // came last in this loop--the paths are sorted before being
+            // applied, so the winner cannot be decided there.
+            if ($realpath) {
+              $winner_by_realpath[$realpath] = [$meta, $perms];
+            }
+          }
+          unset($items);
         }
-        unset($items);
       }
     }
 
@@ -177,6 +214,11 @@ class ApplyCommand extends Command {
         $progress_bar->advance();
       }
       list($meta, $perms, $current, $realpath) = $data;
+      // Where more than one path addresses the same inode, every one of them
+      // reports and applies the instruction that won during calculation.
+      if ($realpath && isset($winner_by_realpath[$realpath])) {
+        list($meta, $perms) = $winner_by_realpath[$realpath];
+      }
       if ($realpath && isset($processed_realpaths[$realpath])) {
         if ($is_very_verbose) {
           $output->writeln(sprintf("%s %s%s", $perms, $meta['icon'], $label));

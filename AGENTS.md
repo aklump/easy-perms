@@ -1,3 +1,3 @@
 * Use: /Applications/MAMP/bin/php/php7.4.33/bin/php
-* Run tests using `bin/run_phpunit_tests.sh`
+* Run tests using `bin/run-phpunit-tests.sh`
 * Never edit ./README.md or ./CHANGELOG.md; the source is found in ./knowledge/...

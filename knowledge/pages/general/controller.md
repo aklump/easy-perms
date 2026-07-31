@@ -20,13 +20,14 @@ tags: ''
 
 ## Multiple and/or Local Configuration
 
-1. It is possible to pass multiple configuration paths to the controller, which are merged together. This is how you can have environment-specific overrides, e.g.
+1. It is possible to pass multiple configuration paths to the controller. They are processed in the order given, and each later file supersedes the earlier ones. This is how you can have environment-specific overrides, e.g.
 
    ```bash
    ... bin/easy-perms config/perms.yml config/perms.local.yml "$@"
    ```
 2. Do not commit _perms.local.yml_
 3. Use it for local-only, additional permissions.
+4. Always list the baseline config first and the environment override last; reversing the order reverses which one wins. See _Multiple Configuration Files_ on the installation pages for the processing details.
 
 ## Other Highlights
 

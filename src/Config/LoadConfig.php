@@ -22,21 +22,56 @@ class LoadConfig {
    */
   public function __invoke(array $config_paths): array {
     $config_paths = (new ResolveConfigPaths())($config_paths);
-    $all_config = [];
-    foreach ($this->defaults as $type => $perms) {
-      $all_config[$type] = [];
-      foreach ($perms->jsonSerialize() as $key => $value) {
-        $all_config[$type][$key] = $this->normalizePermissionMode($value, $key);
-      }
-    }
+    $all_config = $this->createDefaultConfig();
 
     $load_content = new LoadConfigContent();
     foreach ($config_paths as $path) {
       $one_config = $load_content($path);
-      $this->merge($one_config, $all_config);
+      $this->mergeConfig($one_config, $all_config);
     }
 
     return $all_config;
+  }
+
+  /**
+   * Create the starting configuration, that is the defaults only.
+   *
+   * Use this together with ::mergeConfig to merge configuration files one at a
+   * time, e.g. to obtain the effective configuration at each step of a
+   * sequence.
+   *
+   * @return array
+   *   The configuration containing only the normalized defaults.
+   */
+  public function createDefaultConfig(): array {
+    $config = [];
+    foreach ($this->defaults as $type => $perms) {
+      $config[$type] = [];
+      foreach ($perms->jsonSerialize() as $key => $value) {
+        $config[$type][$key] = $this->normalizePermissionMode($value, $key);
+      }
+    }
+
+    return $config;
+  }
+
+  /**
+   * Merge the contents of a single configuration file into a result.
+   *
+   * Later configurations supersede earlier ones; permission modes are
+   * replaced and path lists are appended.
+   *
+   * @param array $one_config
+   *   The contents of a single configuration file.
+   * @param array $result
+   *   The evolving configuration to merge into; passed by reference.
+   *
+   * @return void
+   *
+   * @see \AKlump\EasyPerms\Config\LoadConfigContent
+   */
+  public function mergeConfig(array $one_config, array &$result): void {
+    $this->merge($one_config, $result);
   }
 
 
@@ -78,7 +113,7 @@ class LoadConfig {
           }
         }
         else {
-          $result = array_merge($value, $result);
+          $result = array_merge($result, $value);
           $result = array_filter($result);
           $result = array_unique($result);
         }
