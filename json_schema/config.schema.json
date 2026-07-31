@@ -3,7 +3,7 @@
   "$defs": {
     "octal": {
       "type": "string",
-      "pattern": "^0\\d{3}$"
+      "pattern": "^0[0-7]{3}$"
     },
     "paths_set": {
       "type": "array",
@@ -17,6 +17,9 @@
       "additionalProperties": false,
       "properties": {
         "default": {
+          "$ref": "#/$defs/octal"
+        },
+        "readonly": {
           "$ref": "#/$defs/octal"
         },
         "writable": {
