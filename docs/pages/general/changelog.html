@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.26">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.27">
         <title>Changelog | Easy Perms</title>
   </head>
 <body class="my-5">
@@ -45,6 +45,19 @@
       <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<h2>[Unreleased]</h2>
+<h3>Fixed</h3>
+<ul>
+<li>Patterns now match files reached through a symlinked directory. A directory reachable by two paths was only ever listed under one of them, so a glob such as <code>web/*/custom/*/bin/*</code> could not match a theme symlinked out of an install directory, and an explicit path had to be listed instead. The missing paths are derived from the single directory walk, so no extra filesystem scanning is done.</li>
+<li>Where several paths address one inode, by symlink or hard link, the permission applied is the one that won during calculation. Previously whichever path sorted first alphabetically decided the outcome, so a later instruction could be silently dropped.</li>
+<li><code>optimize</code> keeps a path that currently matches nothing. Such a pattern was treated as covered by any glob in the same section and removed, discarding configuration written for paths that do not exist yet--build artifacts, or files created by an install step. Genuine redundancy is still consolidated.</li>
+<li><code>HandleMemory</code> compares the memory limit in bytes. As strings <code>"1G"</code> sorts below <code>"512M"</code>, so an existing limit of <code>1G</code>, <code>2G</code> or <code>-1</code> (unlimited) was being reduced to 512M, while a limit of <code>64M</code> was left too low.</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Multiple configuration files are now applied sequentially: each file is processed only after the previous one has been fully processed. A later file still supersedes an earlier one for any path both target.</li>
+<li>As a result, an override to <code>file_permissions</code> or <code>directory_permissions</code> is no longer retroactive; it applies to the paths listed in the file that declares it and in any file processed after it. Previously the last override found in any file was applied to every path.</li>
+</ul>
 <h2>[0.0.24] - 2026-07-20</h2>
 <h3>Added</h3>
 <ul>
@@ -82,9 +95,9 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.26</strong>
+        <strong>0.0.27</strong>
         &bull;
-                    Last Update: <strong>7/21/2026</strong>
+                    Last Update: <strong>7/31/2026</strong>
           </div>
   </footer>
 
@@ -270,9 +283,9 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.26"></script>
-  <script src="../../dist/lunr.js?ver=0.0.26"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.26"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.27"></script>
+  <script src="../../dist/lunr.js?ver=0.0.27"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.27"></script>
 
 </body>
 </html>

@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.26">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.27">
         <title>What Are the Permission Values? | Easy Perms</title>
   </head>
 <body class="my-5">
@@ -58,6 +58,32 @@ directory_permissions:
   writable: '0770'
   executable: '0750'
 </code></pre>
+<h2>When Overrides Take Effect</h2>
+<p>Because configuration files are processed in order — each one only after the previous has been fully processed — an override to <code>file_permissions</code> or <code>directory_permissions</code> is <strong>not retroactive</strong>. It affects the paths listed in the file that declares it, and any file processed after it.</p>
+<p>Given <code>easy-perms apply base.yml dev.yml</code>:</p>
+<p><em>base.yml</em></p>
+<pre><code class="yaml">file_permissions:
+  writable: '0664'
+writable:
+  - base.php
+</code></pre>
+<p><em>dev.yml</em></p>
+<pre><code class="yaml">file_permissions:
+  writable: '0600'
+writable:
+  - dev.php
+</code></pre>
+<p>The result is:</p>
+<table class="table">
+<thead>
+<tr><th>Path</th><th>Mode</th><th>Why</th></tr>
+</thead>
+<tbody>
+<tr><td><em>base.php</em></td><td><code>0664</code></td><td>The mode in effect when <em>base.yml</em> was processed.</td></tr>
+<tr><td><em>dev.php</em></td><td><code>0600</code></td><td><em>dev.yml</em> raised the override before its own paths ran.</td></tr>
+</tbody>
+</table>
+<p>To change the mode of <em>base.php</em> too, either list it again in <em>dev.yml</em> or move the override into <em>base.yml</em>.</p>
     </article>
   </div>
 </main>
@@ -65,9 +91,9 @@ directory_permissions:
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.26</strong>
+        <strong>0.0.27</strong>
         &bull;
-                    Last Update: <strong>7/21/2026</strong>
+                    Last Update: <strong>7/31/2026</strong>
           </div>
   </footer>
 
@@ -253,9 +279,9 @@ directory_permissions:
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.26"></script>
-  <script src="../../dist/lunr.js?ver=0.0.26"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.26"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.27"></script>
+  <script src="../../dist/lunr.js?ver=0.0.27"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.27"></script>
 
 </body>
 </html>

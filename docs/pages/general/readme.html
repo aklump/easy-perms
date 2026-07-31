@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.26">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.27">
         <title>Easy Perms</title>
   </head>
 <body class="my-5">
@@ -98,6 +98,24 @@ executable: []
 <li>Make adjustments as necessary.</li>
 <li>Add paths and path globs to each of: <code>default, readonly, writable, executable</code> as is appropriate to your project.</li>
 </ol>
+<h3>Multiple Configuration Files</h3>
+<p>When you pass more than one configuration file, <strong>the order matters</strong>. Configuration files are processed in the order given, and each file is processed only after the previous one has been fully processed. A later file supersedes an earlier one.</p>
+<pre><code class="shell">vendor/bin/easy-perms apply easy-perms.yml easy-perms.dev.yml
+</code></pre>
+<p>The above is processed like this:</p>
+<ol>
+<li>Load the default permission values.</li>
+<li>Merge <em>easy-perms.yml</em>.</li>
+<li>Calculate permissions for the paths listed in <em>easy-perms.yml</em>.</li>
+<li>Merge <em>easy-perms.dev.yml</em> over the result of step 2.</li>
+<li>Calculate permissions for the paths listed in <em>easy-perms.dev.yml</em>.</li>
+<li>Apply the calculated permissions.</li>
+</ol>
+<p>Two consequences follow from this:</p>
+<ul>
+<li><strong>A later file wins for any path both files target.</strong> If <em>easy-perms.yml</em> lists <code>foo.php</code> as <code>readonly</code> and <em>easy-perms.dev.yml</em> lists it as <code>writable</code>, the file ends up writable. This is what makes a development config able to loosen a production baseline.</li>
+<li><strong>A later <code>file_permissions</code> or <code>directory_permissions</code> override is not retroactive.</strong> It applies to the paths listed in that file and in any file after it — not to paths already calculated by an earlier file. See <em>What Are the Permission Values?</em> for an example.</li>
+</ul>
 <h3>Pattern Syntax</h3>
 <ul>
 <li>The pattern matching rules are the same as used in <a href="https://git-scm.com/docs/gitignore#_pattern_format">gitignore</a></li>
@@ -239,6 +257,7 @@ Permission setting was successful.
 <ul>
 <li>If a directory does not have execute permissions, then you cannot change permissions on it's contents.</li>
 <li><strong>Symlinks may cause some unexpected output</strong> depending upon how you write your configuration. More specifically it may appear that the same file keeps having the perms set. This is not to worry and things are most likely working correctly on the backend.</li>
+<li>A symlinked directory may be matched by either path--the symlink or its target--so a pattern like <code>web/themes/custom/*/bin/*</code> works for a theme symlinked out of an install directory. Both paths are the same file, so only one permission can apply to it; when your configuration assigns two, the one calculated last wins, following the same order described under <em>Multiple Configuration Files</em>.</li>
 </ul>
 <h2>Sandbox Installation (w/Composer)</h2>
 <p>A sandboxed installation separates this project, its dependencies, and even the PHP version from your main application.  In a team environment is allows one member to use a package independently. The project is installed in an isolated, hidden subdirectory in the root directory. This is particularly useful if you have conflicts with your application's dependencies or if you need to use a different PHP version, or you don't want to commit the package to the repo. It functions similarly to <a href="https://asdf-vm.com/">asdf</a> shims, providing a project-specific environment for the tool.</p>
@@ -295,9 +314,9 @@ composer require aklump/easy-perms:@dev
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.26</strong>
+        <strong>0.0.27</strong>
         &bull;
-                    Last Update: <strong>7/21/2026</strong>
+                    Last Update: <strong>7/31/2026</strong>
           </div>
   </footer>
 
@@ -482,9 +501,9 @@ composer require aklump/easy-perms:@dev
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.26"></script>
-  <script src="../../dist/lunr.js?ver=0.0.26"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.26"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.27"></script>
+  <script src="../../dist/lunr.js?ver=0.0.27"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.27"></script>
 
 </body>
 </html>

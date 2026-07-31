@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.26">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.27">
         <title>Config Optimization | Easy Perms</title>
   </head>
 <body class="my-5">
@@ -49,6 +49,14 @@
 <li><strong>Sorting</strong>: It sorts paths alphabetically within each group (e.g., <code>writable</code>, <code>readonly</code>), ignoring single quotes during the sorting process for consistent results.</li>
 <li><strong>Backups</strong>: Before making any changes, it creates a backup of your original configuration file with a timestamp suffix.</li>
 </ul>
+<h2>Scope</h2>
+<p>Each configuration file is rewritten from its own contents alone, so:</p>
+<ul>
+<li><strong>The order you list the files in does not matter.</strong> This is unlike <code>apply</code>, where a later file supersedes an earlier one.</li>
+<li>A glob in one file never removes a path from another file, and a glob in one section never removes a path from another section. Coverage is only ever considered within a single section of a single file.</li>
+<li>A path that matches nothing at the moment is left alone, because there is no evidence a glob covers it. This keeps configuration for paths that do not exist yet, such as build artifacts or files an install step creates.</li>
+</ul>
+<p>Consolidation reflects the files on disk when you run it. If a glob covers an explicit path today, that path is removed; should the filesystem later change so the glob no longer matches, the permission goes with it. Re-run <code>apply</code> after optimizing to confirm the result is what you expect.</p>
 <h2>Usage</h2>
 <p>You can run the optimization as often as you like:</p>
 <pre><code class="bash">easy-perms optimize easy-perms.yml
@@ -70,9 +78,9 @@
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.26</strong>
+        <strong>0.0.27</strong>
         &bull;
-                    Last Update: <strong>7/21/2026</strong>
+                    Last Update: <strong>7/31/2026</strong>
           </div>
   </footer>
 
@@ -257,9 +265,9 @@
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.26"></script>
-  <script src="../../dist/lunr.js?ver=0.0.26"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.26"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.27"></script>
+  <script src="../../dist/lunr.js?ver=0.0.27"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.27"></script>
 
 </body>
 </html>

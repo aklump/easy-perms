@@ -69,6 +69,28 @@ executable:
 1. Make adjustments as necessary.
 4. Add paths and path globs to each of: `default, readonly, writable, executable` as is appropriate to your project.
 
+### Multiple Configuration Files
+
+When you pass more than one configuration file, **the order matters**. Configuration files are processed in the order given, and each file is processed only after the previous one has been fully processed. A later file supersedes an earlier one.
+
+```shell
+vendor/bin/easy-perms apply easy-perms.yml easy-perms.dev.yml
+```
+
+The above is processed like this:
+
+1. Load the default permission values.
+2. Merge _easy-perms.yml_.
+3. Calculate permissions for the paths listed in _easy-perms.yml_.
+4. Merge _easy-perms.dev.yml_ over the result of step 2.
+5. Calculate permissions for the paths listed in _easy-perms.dev.yml_.
+6. Apply the calculated permissions.
+
+Two consequences follow from this:
+
+* **A later file wins for any path both files target.** If _easy-perms.yml_ lists `foo.php` as `readonly` and _easy-perms.dev.yml_ lists it as `writable`, the file ends up writable. This is what makes a development config able to loosen a production baseline.
+* **A later `file_permissions` or `directory_permissions` override is not retroactive.** It applies to the paths listed in that file and in any file after it — not to paths already calculated by an earlier file. See _What Are the Permission Values?_ for an example.
+
 ### Pattern Syntax
 
 * The pattern matching rules are the same as used in [gitignore](https://git-scm.com/docs/gitignore#_pattern_format)
@@ -219,6 +241,7 @@ More information may be available in the PHP error log, here is an example:
 
 * If a directory does not have execute permissions, then you cannot change permissions on it's contents.
 * **Symlinks may cause some unexpected output** depending upon how you write your configuration. More specifically it may appear that the same file keeps having the perms set. This is not to worry and things are most likely working correctly on the backend.
+* A symlinked directory may be matched by either path--the symlink or its target--so a pattern like `web/themes/custom/*/bin/*` works for a theme symlinked out of an install directory. Both paths are the same file, so only one permission can apply to it; when your configuration assigns two, the one calculated last wins, following the same order described under _Multiple Configuration Files_.
 
 ## Sandbox Installation (w/Composer)
 

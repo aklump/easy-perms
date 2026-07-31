@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.26">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.26">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.27">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.27">
         <title>Controller and Configuration | Easy Perms</title>
   </head>
 <body class="my-5">
@@ -57,12 +57,13 @@ chmod u+x bin/apply-perms.sh
 </ol>
 <h2>Multiple and/or Local Configuration</h2>
 <ol>
-<li><p>It is possible to pass multiple configuration paths to the controller, which are merged together. This is how you can have environment-specific overrides, e.g.</p>
+<li><p>It is possible to pass multiple configuration paths to the controller. They are processed in the order given, and each later file supersedes the earlier ones. This is how you can have environment-specific overrides, e.g.</p>
 <pre><code class="bash">... bin/easy-perms config/perms.yml config/perms.local.yml "$@"
 </code></pre>
 </li>
 <li>Do not commit <em>perms.local.yml</em></li>
 <li>Use it for local-only, additional permissions.</li>
+<li>Always list the baseline config first and the environment override last; reversing the order reverses which one wins. See <em>Multiple Configuration Files</em> on the installation pages for the processing details.</li>
 </ol>
 <h2>Other Highlights</h2>
 <ul>
@@ -76,9 +77,9 @@ chmod u+x bin/apply-perms.sh
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.26</strong>
+        <strong>0.0.27</strong>
         &bull;
-                    Last Update: <strong>7/21/2026</strong>
+                    Last Update: <strong>7/31/2026</strong>
           </div>
   </footer>
 
@@ -264,9 +265,9 @@ chmod u+x bin/apply-perms.sh
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.26"></script>
-  <script src="../../dist/lunr.js?ver=0.0.26"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.26"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.27"></script>
+  <script src="../../dist/lunr.js?ver=0.0.27"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.27"></script>
 
 </body>
 </html>
