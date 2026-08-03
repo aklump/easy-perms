@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en" data-knowledge-id="5b98aba0-bc9b-4de6-91ea-4c42f071700d">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.28">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.28">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.28">
+        <title>Environment Strategy | Easy Perms</title>
+  </head>
+<body class="my-5">
+
+<header class="header bg-light fixed-top p-2 pt-1">
+  <div class="container-md">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="header__breadcrumbs flex-shrink-0 flex-grow-1 me-3">
+        <nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+      <a class="fw-bold" href="../../index.html">Easy Perms</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a class="fw-bold" href="#" data-bs-toggle="offcanvas"
+         data-bs-target="#table-of-contents"
+         aria-controls="table-of-contents">TOC</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="readme.html">General</a></li>
+  </ol>
+</nav>
+
+      </div>
+      <div class="header__tags me-3">  </div>
+      <div class="header__page-numbers flex-shrink-1">9
+        / 9</div>
+    </div>
+  </div>
+</header>
+
+<main class="container-md flex-column">
+  <div class="row mb-5 pt-5">
+    <article class="col">
+      <h1 class="mb-4 text-primary">Environment Strategy</h1>
+      <p>The cleaner model for managing permissions is to <strong>keep the repository in the permission state that is useful for source control and development</strong>, then apply production permissions <strong>after deployment</strong>, on the deployed copy.</p>
+<p>In other words, Git should represent the <strong>source tree</strong>, not the final hardened runtime state.</p>
+<h2>Recommended Strategy</h2>
+<ol>
+<li><strong>Repository permissions</strong>: Git should store the <strong>source tree</strong> (dev-friendly) permissions.</li>
+<li><strong>Runtime permissions</strong>: Hardened production permissions should be applied <strong>after deployment</strong> on the production copy.</li>
+</ol>
+<h3>Configuration Separation</h3>
+<p>Use two files to separate hardening from ergonomics:</p>
+<ol>
+<li><strong><code>easy-perms.yml</code></strong>: Production baseline; strictest permissions.</li>
+<li><strong><code>easy-perms.dev.yml</code></strong>: Development overrides; adds executable bits for scripts.</li>
+</ol>
+<p>In development, apply both:
+<code>`</code>shell script
+vendor/bin/easy-perms apply easy-perms.yml easy-perms.dev.yml
+<code>`</code></p>
+<p>In production, apply only the baseline:
+<code>`</code>shell script
+vendor/bin/easy-perms apply easy-perms.yml
+<code>`</code></p>
+<h2>Release Workflow</h2>
+<ol>
+<li><strong>Develop</strong>: Use dev-friendly executable bits in your checkout.</li>
+<li><strong>Release</strong>: Commit and tag from a clean working tree.</li>
+<li><strong>Deploy</strong>: Sync release to production.</li>
+<li><strong>Harden</strong>: Apply production permissions on the production copy.</li>
+</ol>
+<h3>Production Git Working Trees</h3>
+<p>If production is a Git checkout, you have two choices:
+<em>   <strong>Option A</strong>: Set <code>git config --local core.fileMode false</code> to ignore mode changes on production.
+</em>   <strong>Option B</strong>: Deploy to a non-Git release directory (e.g., <code>releases/2026-08-03</code>) and symlink <code>current</code> to it.</p>
+<h2>Caveat: Timing</h2>
+<p>Apply production hardening only <strong>after</strong> all deployment scripts (e.g., Composer, database updates) have finished. Hardening too early may block your own deployment process.</p>
+    </article>
+  </div>
+</main>
+
+  <footer class="footer d-flex justify-content-center">
+    <div class="flex-column justify-content-center">
+              Version:
+        <strong>0.0.28</strong>
+        &bull;
+                    Last Update: <strong>8/3/2026</strong>
+          </div>
+  </footer>
+
+
+<nav class="nav d-flex justify-content-center align-items-center
+  fixed-bottom">
+  <div class="btn-group flex-fill">
+              <a href="readme.html" class="btn nav__prev-chapter btn-secondary"><i class="bi
+      bi-caret-left-fill"></i> Easy Perms</a>
+  
+    
+              <a href="optimize.html" class="btn nav__prev-page js-nav__prev-page
+    btn-primary"><i class="bi
+      bi-caret-left-fill"></i></a>
+  
+    
+    <a class="nav__toc btn btn-light" href="#"
+       data-bs-toggle="offcanvas"
+       data-bs-target="#table-of-contents"
+       aria-controls="table-of-contents"><i class="bi
+           bi-list-ol"></i></a>
+    
+              <span class="btn nav__next-page js-nav__next-page
+    btn-primary"></span>
+  
+    
+              <span class="btn nav__next-chapter btn-secondary "></span>
+  
+  </div>
+</nav>
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="table-of-contents"
+     aria-labelledby="table-of-contents__title" data-bs-keyboard="true">
+  <div class="offcanvas-header">
+    <h1 class="h6 offcanvas-title js-chapter-list-title"
+        id="table-of-contents__title">All
+      Chapters
+      &amp; Pages</h1>
+    <h1 class="d-none h6 offcanvas-title js-search-results-title"
+        id="table-of-contents__title">Search Results</h1>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+          <input class="js-search form-control mb-4" type="search"
+             placeholder="Search docs..."
+             aria-label="Search">
+      <div class="js-search-results d-none">
+        <h2 class="h4 mt-4">Matched Pages</h2>
+        <ol class="list-unstyled">
+                                              <li data-page="readme" value="1">
+      <a class="js-page-link" href="readme.html">Easy Perms<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="controller" value="2">
+      <a class="js-page-link" href="controller.html">Controller and Configuration<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="drupal" value="3">
+      <a class="js-page-link" href="drupal.html">Drupal-Specific Configuration<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="permission_values" value="4">
+      <a class="js-page-link" href="permission_values.html">What Are the Permission Values?<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="workflow" value="5">
+      <a class="js-page-link" href="workflow.html">Workflow Strategy<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="changelog" value="6">
+      <a class="js-page-link" href="changelog.html">Changelog<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="hints" value="7">
+      <a class="js-page-link" href="hints.html">Hints<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="optimize" value="8">
+      <a class="js-page-link" href="optimize.html">Config Optimization<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                                    <li data-page="environments" value="9">
+      <a class="js-page-link" href="environments.html">Environment Strategy<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>
+    </li>
+  
+                              </ol>
+      </div>
+        
+    <div class="js-chapter-list">
+              <h2 class="h4 mt-4">General</h2>
+        <ol>
+                                <li data-page="readme" value="1">
+      <a class="js-page-link" href="readme.html">Easy Perms</a>
+    </li>
+  
+                                <li data-page="controller" value="2">
+      <a class="js-page-link" href="controller.html">Controller and Configuration</a>
+    </li>
+  
+                                <li data-page="drupal" value="3">
+      <a class="js-page-link" href="drupal.html">Drupal-Specific Configuration</a>
+    </li>
+  
+                                <li data-page="permission_values" value="4">
+      <a class="js-page-link" href="permission_values.html">What Are the Permission Values?</a>
+    </li>
+  
+                                <li data-page="workflow" value="5">
+      <a class="js-page-link" href="workflow.html">Workflow Strategy</a>
+    </li>
+  
+                                <li data-page="changelog" value="6">
+      <a class="js-page-link" href="changelog.html">Changelog</a>
+    </li>
+  
+                                <li data-page="hints" value="7">
+      <a class="js-page-link" href="hints.html">Hints</a>
+    </li>
+  
+                                <li data-page="optimize" value="8">
+      <a class="js-page-link" href="optimize.html">Config Optimization</a>
+    </li>
+  
+                                <li data-page="environments" value="9">
+      <a class="js-page-link" href="environments.html">Environment Strategy</a>
+    </li>
+  
+                  </ol>
+          </div>
+  </div>
+</div>
+<div class="modal fade" id="modal" tabindex="-1"
+     aria-labelledby="modal-title" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="js-modal-title modal-title" id="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mt-1 mb-4">
+                  </p>
+        
+                
+        <ul class="list-group list-group-flush">
+                                    <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="readme.html">Easy Perms</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="controller.html">Controller and Configuration</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="drupal.html">Drupal-Specific Configuration</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="permission_values.html">What Are the Permission Values?</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="workflow.html">Workflow Strategy</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="changelog.html">Changelog</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="hints.html">Hints</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="optimize.html">Config Optimization</a>
+                                                <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="environments.html">Environment Strategy</a>
+                              </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.28"></script>
+  <script src="../../dist/lunr.js?ver=0.0.28"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.28"></script>
+
+</body>
+</html>

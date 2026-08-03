@@ -22,7 +22,7 @@ The files in a web app are likely to require writable and/or executable permissi
 2. Require the latest stable version:
    
    ```shell
-   composer require aklump/easy-perms:^0.0
+   composer require aklump/easy-perms:">=0.0.28 <0.1"
    ```
 3. ... or require the dev channel:
    
@@ -272,7 +272,7 @@ A sandboxed installation separates this project, its dependencies, and even the 
 2. Require the latest stable version:
    
    ```shell
-   composer require aklump/easy-perms:^0.0
+   composer require aklump/easy-perms:&quot;&gt;=0.0.28 &lt;0.1&quot;
    ```
 3. ... or require the dev channel:
    
