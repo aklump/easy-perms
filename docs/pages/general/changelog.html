@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.28">
-      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.28">
-      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.28">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.29">
+      <link rel="stylesheet" href="../../dist/dist/bootstrap_theme.css?ver=0.0.29">
+      <link rel="stylesheet" href="../../dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.29">
         <title>Changelog | Easy Perms</title>
   </head>
 <body class="my-5">
@@ -46,6 +46,12 @@
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <h2>[Unreleased]</h2>
+<h2>[0.0.30] - 2026-10-22</h2>
+<h3>Fixed</h3>
+<ul>
+<li><code>optimize</code> can rewrite a read-only configuration file. It wrote the file in place, which failed with a permission warning when the file was read-only, as one locked by easy-perms itself can be. The result is now written to a temporary file and renamed into place, which only needs the directory to be writable, and the file keeps its original permissions.</li>
+</ul>
+<h2>[0.0.29] - 2026-10-22</h2>
 <h3>Fixed</h3>
 <ul>
 <li>Works with symfony/console 7. Commands set their names in <code>configure()</code> instead of the static <code>$defaultName</code> property, which Symfony Console 7 removed; on 7.x every command failed with "cannot have an empty name".</li>
@@ -96,7 +102,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
               Version:
-        <strong>0.0.28</strong>
+        <strong>0.0.29</strong>
         &bull;
                     Last Update: <strong>10/22/2026</strong>
           </div>
@@ -297,9 +303,9 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
   </div>
 </div>
 
-  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.28"></script>
-  <script src="../../dist/lunr.js?ver=0.0.28"></script>
-  <script src="../../dist/knowledge.min.js?ver=0.0.28"></script>
+  <script src="../../dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.29"></script>
+  <script src="../../dist/lunr.js?ver=0.0.29"></script>
+  <script src="../../dist/knowledge.min.js?ver=0.0.29"></script>
 
 </body>
 </html>

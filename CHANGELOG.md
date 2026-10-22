@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.30] - 2026-10-22
+
+### Fixed
+
+- `optimize` can rewrite a read-only configuration file. It wrote the file in place, which failed with a permission warning when the file was read-only, as one locked by easy-perms itself can be. The result is now written to a temporary file and renamed into place, which only needs the directory to be writable, and the file keeps its original permissions.
+
+## [0.0.29] - 2026-10-22
+
 ### Fixed
 
 - Works with symfony/console 7. Commands set their names in `configure()` instead of the static `$defaultName` property, which Symfony Console 7 removed; on 7.x every command failed with "cannot have an empty name".
