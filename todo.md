@@ -1,6 +1,10 @@
 ## Blockers
 
+* can't add php 8.5 to the multi test file "not available"
+
 ## Critical
+
+- [ ] Add php 8.5 and 8.6 tests to the multitest
 
 ## Normal
 

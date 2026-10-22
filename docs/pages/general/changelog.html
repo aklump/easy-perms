@@ -48,6 +48,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <h2>[Unreleased]</h2>
 <h3>Fixed</h3>
 <ul>
+<li>Works with symfony/console 7. Commands set their names in <code>configure()</code> instead of the static <code>$defaultName</code> property, which Symfony Console 7 removed; on 7.x every command failed with "cannot have an empty name".</li>
 <li>Patterns now match files reached through a symlinked directory. A directory reachable by two paths was only ever listed under one of them, so a glob such as <code>web/*/custom/*/bin/*</code> could not match a theme symlinked out of an install directory, and an explicit path had to be listed instead. The missing paths are derived from the single directory walk, so no extra filesystem scanning is done.</li>
 <li>Where several paths address one inode, by symlink or hard link, the permission applied is the one that won during calculation. Previously whichever path sorted first alphabetically decided the outcome, so a later instruction could be silently dropped.</li>
 <li><code>optimize</code> keeps a path that currently matches nothing. Such a pattern was treated as covered by any glob in the same section and removed, discarding configuration written for paths that do not exist yet--build artifacts, or files created by an install step. Genuine redundancy is still consolidated.</li>
@@ -97,7 +98,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
               Version:
         <strong>0.0.28</strong>
         &bull;
-                    Last Update: <strong>8/3/2026</strong>
+                    Last Update: <strong>10/22/2026</strong>
           </div>
   </footer>
 
