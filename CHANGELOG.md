@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Works with symfony/console 7. Commands set their names in `configure()` instead of the static `$defaultName` property, which Symfony Console 7 removed; on 7.x every command failed with "cannot have an empty name".
 - Patterns now match files reached through a symlinked directory. A directory reachable by two paths was only ever listed under one of them, so a glob such as `web/*/custom/*/bin/*` could not match a theme symlinked out of an install directory, and an explicit path had to be listed instead. The missing paths are derived from the single directory walk, so no extra filesystem scanning is done.
 - Where several paths address one inode, by symlink or hard link, the permission applied is the one that won during calculation. Previously whichever path sorted first alphabetically decided the outcome, so a later instruction could be silently dropped.
 - `optimize` keeps a path that currently matches nothing. Such a pattern was treated as covered by any glob in the same section and removed, discarding configuration written for paths that do not exist yet--build artifacts, or files created by an install step. Genuine redundancy is still consolidated.

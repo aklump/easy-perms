@@ -10,7 +10,7 @@ The files in a web app are likely to require writable and/or executable permissi
 
 **For security, install this above web root, and not in a location accessibly by the web.**
 
-##        Installation (w/Composer)
+## Installation (w/Composer)
 
 1. Installation requires explicit repositories:
    
