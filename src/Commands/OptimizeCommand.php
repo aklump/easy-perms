@@ -19,10 +19,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class OptimizeCommand extends Command {
 
-  protected static $defaultName = 'optimize';
-
   protected function configure() {
     $this
+      ->setName('optimize')
       ->setDescription('Consolidate paths in configuration files to favor globs over explicit paths.')
       ->addArgument('config', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'Paths to the configuration files.');
   }

@@ -29,8 +29,6 @@ class ApplyCommand extends Command {
 
   use ConfigInitializerTrait;
 
-  protected static $defaultName = 'apply';
-
   /**
    * @var \AKlump\EasyPerms\Environment\CheckEnvironment
    */
@@ -43,6 +41,7 @@ class ApplyCommand extends Command {
 
   protected function configure() {
     $this
+      ->setName('apply')
       ->setDescription('Apply permissions to files and directories based on configuration.')
       ->addArgument('config', InputArgument::IS_ARRAY, 'Paths to the configuration files.');
   }

@@ -15,10 +15,10 @@ class InitCommand extends Command {
 
   use ConfigInitializerTrait;
 
-  protected static $defaultName = 'init';
-
   protected function configure() {
-    $this->setDescription('Initialize a new configuration.');
+    $this
+      ->setName('init')
+      ->setDescription('Initialize a new configuration.');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
