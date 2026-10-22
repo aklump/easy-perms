@@ -57,6 +57,30 @@ class OptimizeCommandTest extends TestCase {
     $this->assertGreaterThanOrEqual(1, count($backups));
   }
 
+  public function testOptimizeRewritesReadOnlyConfigAndPreservesItsMode() {
+    $config_file = $this->getTestFilePath('readonly.yml', TRUE);
+    file_put_contents($config_file, Yaml::dump([
+      'writable' => [
+        'foo/bar.txt',
+        'foo/*.txt',
+      ],
+    ]));
+    $this->getTestFilePath('foo/bar.txt', TRUE);
+    $this->getTestFilePath('foo/other.txt', TRUE);
+    chmod($config_file, 0444);
+
+    $application = new Application();
+    $application->add(new \AKlump\EasyPerms\Commands\OptimizeCommand());
+    $command_tester = new CommandTester($application->find('optimize'));
+    $status = $command_tester->execute(['config' => [$config_file]]);
+
+    $this->assertSame(0, $status);
+    $this->assertSame(['foo/*.txt'], Yaml::parseFile($config_file)['writable']);
+    clearstatcache(TRUE, $config_file);
+    $this->assertSame(0444, fileperms($config_file) & 0777);
+    $this->assertSame([], glob(dirname($config_file) . '/.easy-perms-optimize-*'));
+  }
+
   public function testOptimizeHandlesGlobArguments() {
     $config_file1 = $this->getTestFilePath('glob1.yml', TRUE);
     $config_file2 = $this->getTestFilePath('glob2.yml', TRUE);

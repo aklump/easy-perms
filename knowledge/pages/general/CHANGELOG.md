@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `optimize` can rewrite a read-only configuration file. It wrote the file in place, which failed with a permission warning when the file was read-only, as one locked by easy-perms itself can be. The result is now written to a temporary file and renamed into place, which only needs the directory to be writable, and the file keeps its original permissions.
 - Works with symfony/console 7. Commands set their names in `configure()` instead of the static `$defaultName` property, which Symfony Console 7 removed; on 7.x every command failed with "cannot have an empty name".
 - Patterns now match files reached through a symlinked directory. A directory reachable by two paths was only ever listed under one of them, so a glob such as `web/*/custom/*/bin/*` could not match a theme symlinked out of an install directory, and an explicit path had to be listed instead. The missing paths are derived from the single directory walk, so no extra filesystem scanning is done.
 - Where several paths address one inode, by symlink or hard link, the permission applied is the one that won during calculation. Previously whichever path sorted first alphabetically decided the outcome, so a later instruction could be silently dropped.

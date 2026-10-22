@@ -101,7 +101,22 @@ class OptimizeCommand extends Command {
         $output->writeln(sprintf('<info>Backup created at %s</info>', $get_short_path($backup_path)));
 
         $new_content = Yaml::dump($config, 4, 2);
-        file_put_contents($path, $new_content);
+        // The config file is often read-only (easy-perms may have locked it
+        // itself), so replace it via a temp file in the same directory instead
+        // of writing in place; this only needs the directory to be writable.
+        $mode = fileperms($path) & 0777;
+        $temp_path = $filesystem->tempnam(dirname($path), '.easy-perms-optimize-');
+        try {
+          $filesystem->dumpFile($temp_path, $new_content);
+          $filesystem->chmod($temp_path, $mode);
+          $filesystem->rename($temp_path, $path, TRUE);
+        }
+        catch (\Exception $exception) {
+          $filesystem->remove($temp_path);
+          $output->writeln(sprintf('<error>Unable to write "%s": %s</error>', $get_short_path($path), $exception->getMessage()));
+
+          return Command::FAILURE;
+        }
         $output->writeln(sprintf('<info>Optimized %s</info>', $get_short_path($path)));
         if ($progress_bar) {
           $progress_bar->display();
